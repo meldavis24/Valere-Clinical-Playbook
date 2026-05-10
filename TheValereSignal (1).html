@@ -1,0 +1,2814 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Valère Signal — Clinical Playbook</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Mono:ital,wght@0,300;0,400;1,300&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+<style>
+/* ── TOKENS ── */
+:root {
+  --teal:       #528489;   /* R82 G132 B137 — brand primary */
+  --teal-light: #6da0a6;   /* lighter tint for use on dark backgrounds */
+  --teal-dark:  #446e73;   /* slightly deeper, still clearly teal */
+  --teal-deep:  #1f4a50;   /* dark bg — warm enough not to kill teal reads */
+  --navy:       #006B8F;
+  --navy-dark:  #005570;
+  --cyan:       #2ec4de;   /* warmer cyan — reads clearly against teal */
+  --cyan-pale:  #c2ecf5;
+  --cream:      #f7f2ea;
+  --cream-dark: #ede5d8;
+  --ink:        #1a2e35;
+  --ink-mid:    #2f4a52;
+  --ink-light:  #4a6870;
+  --muted:      #7aa4aa;
+  --rule:       rgba(82,132,137,0.22);
+  --rule-strong:rgba(82,132,137,0.45);
+  --white:      #ffffff;
+  --card-bg:    rgba(255,255,255,0.98);
+  --sidebar-w:  280px;
+  --radius:     3px;
+  --radius-lg:  8px;
+  --shadow:     0 2px 24px rgba(26,46,53,0.10);
+  --shadow-lg:  0 8px 48px rgba(26,46,53,0.15);
+  --transition: 0.22s cubic-bezier(0.4,0,0.2,1);
+}
+
+/* ── RESET ── */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;font-size:16px}
+body{
+  font-family:'Outfit',sans-serif;
+  background:var(--cream);
+  color:var(--ink);
+  min-height:100vh;
+  overflow-x:hidden;
+}
+
+/* ── SCROLLBAR ── */
+::-webkit-scrollbar{width:6px;height:6px}
+::-webkit-scrollbar-track{background:var(--cream-dark)}
+::-webkit-scrollbar-thumb{background:var(--teal);border-radius:3px}
+
+/* ══════════════════════════════════════════
+   COVER / HERO
+══════════════════════════════════════════ */
+#cover{
+  min-height:100vh;
+  display:grid;
+  grid-template-rows:auto 1fr auto;
+  background:linear-gradient(160deg, #1f4a50 0%, #1a3a45 50%, #0d2d38 100%);
+  position:relative;
+  overflow:hidden;
+}
+
+/* Noise texture overlay */
+#cover::before{
+  content:'';
+  position:absolute;inset:0;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='512' height='512' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+  opacity:0.35;pointer-events:none;
+}
+
+/* Decorative arc */
+#cover::after{
+  content:'';
+  position:absolute;
+  right:-180px;top:-120px;
+  width:680px;height:680px;
+  border:1px solid rgba(0,182,227,0.12);
+  border-radius:50%;
+  pointer-events:none;
+}
+
+.cover-arc2{
+  position:absolute;
+  right:-60px;top:60px;
+  width:480px;height:480px;
+  border:1px solid rgba(0,182,227,0.07);
+  border-radius:50%;
+  pointer-events:none;
+}
+.cover-arc3{
+  position:absolute;
+  left:-120px;bottom:-80px;
+  width:360px;height:360px;
+  border:1px solid rgba(82,132,137,0.18);
+  border-radius:50%;
+  pointer-events:none;
+}
+
+.cover-top{
+  padding:2.5rem 3rem 0;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  position:relative;z-index:2;
+}
+
+.cover-wordmark{
+  font-family:'Cormorant Garamond',serif;
+  font-weight:300;
+  font-size:1.1rem;
+  letter-spacing:0.25em;
+  text-transform:uppercase;
+  color:rgba(255,255,255,0.5);
+}
+.cover-wordmark span{
+  color:var(--cyan);
+  font-style:italic;
+  font-weight:400;
+}
+
+.cover-badge{
+  font-family:'DM Mono',monospace;
+  font-size:0.62rem;
+  letter-spacing:0.18em;
+  color:rgba(255,255,255,0.65);
+  text-transform:uppercase;
+  border:1px solid rgba(255,255,255,0.12);
+  padding:0.35rem 0.75rem;
+  border-radius:2px;
+}
+
+.cover-center{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  padding:4rem 3rem;
+  position:relative;z-index:2;
+}
+
+.cover-eyebrow{
+  font-family:'DM Mono',monospace;
+  font-size:0.68rem;
+  letter-spacing:0.28em;
+  text-transform:uppercase;
+  color:var(--cyan);
+  margin-bottom:2rem;
+  opacity:0;
+  animation:fadeUp 0.8s 0.2s forwards;
+}
+
+.cover-title{
+  font-family:'Cormorant Garamond',serif;
+  font-weight:300;
+  font-size:clamp(4.5rem,10vw,9rem);
+  line-height:0.92;
+  color:var(--white);
+  letter-spacing:-0.01em;
+  margin-bottom:0.5rem;
+  opacity:0;
+  animation:fadeUp 0.9s 0.4s forwards;
+}
+.cover-title em{
+  font-style:italic;
+  font-weight:300;
+  color:var(--cyan);
+}
+
+.cover-subtitle{
+  font-family:'Cormorant Garamond',serif;
+  font-weight:300;
+  font-size:clamp(1.8rem,3.5vw,3rem);
+  color:rgba(255,255,255,0.4);
+  letter-spacing:0.04em;
+  margin-top:0.75rem;
+  opacity:0;
+  animation:fadeUp 0.9s 0.55s forwards;
+}
+
+.cover-rule{
+  width:80px;height:1px;
+  background:linear-gradient(90deg,transparent,var(--cyan),transparent);
+  margin:2.5rem auto;
+  opacity:0;
+  animation:fadeUp 0.8s 0.7s forwards;
+}
+
+.cover-desc{
+  max-width:520px;
+  font-family:'Outfit',sans-serif;
+  font-weight:300;
+  font-size:1rem;
+  line-height:1.75;
+  color:rgba(255,255,255,0.85);
+  letter-spacing:0.02em;
+  opacity:0;
+  animation:fadeUp 0.9s 0.85s forwards;
+}
+
+.cover-cta{
+  margin-top:3rem;
+  opacity:0;
+  animation:fadeUp 0.9s 1.05s forwards;
+}
+.cover-cta a{
+  display:inline-block;
+  padding:0.85rem 2.5rem;
+  border:1px solid rgba(0,182,227,0.45);
+  color:var(--cyan);
+  text-decoration:none;
+  font-family:'DM Mono',monospace;
+  font-size:0.72rem;
+  letter-spacing:0.2em;
+  text-transform:uppercase;
+  border-radius:2px;
+  transition:background var(--transition),color var(--transition),border-color var(--transition);
+}
+.cover-cta a:hover{
+  background:var(--cyan);
+  color:var(--teal-deep);
+  border-color:var(--cyan);
+}
+
+.cover-bottom{
+  padding:2rem 3rem;
+  display:flex;align-items:center;justify-content:space-between;
+  border-top:1px solid rgba(255,255,255,0.06);
+  position:relative;z-index:2;
+  opacity:0;
+  animation:fadeIn 1s 1.3s forwards;
+}
+.cover-meta{
+  font-family:'DM Mono',monospace;
+  font-size:0.62rem;
+  letter-spacing:0.15em;
+  color:rgba(255,255,255,0.22);
+  text-transform:uppercase;
+}
+
+/* Signal dots decoration */
+.signal-dots{
+  display:flex;gap:6px;align-items:center;
+}
+.signal-dots span{
+  display:block;border-radius:50%;
+  background:var(--cyan);
+  animation:pulse 2s infinite;
+}
+.signal-dots span:nth-child(1){width:6px;height:6px;opacity:0.9}
+.signal-dots span:nth-child(2){width:5px;height:5px;opacity:0.55;animation-delay:0.3s}
+.signal-dots span:nth-child(3){width:4px;height:4px;opacity:0.3;animation-delay:0.6s}
+
+/* ══════════════════════════════════════════
+   LAYOUT — SIDEBAR + MAIN
+══════════════════════════════════════════ */
+#app{
+  display:grid;
+  grid-template-columns:var(--sidebar-w) 1fr;
+  min-height:100vh;
+  position:relative;
+}
+
+/* ── SIDEBAR ── */
+#sidebar{
+  background:#528489;
+  position:sticky;
+  top:0;
+  height:100vh;
+  overflow-y:auto;
+  display:flex;
+  flex-direction:column;
+  border-right:1px solid rgba(255,255,255,0.12);
+  scrollbar-width:thin;
+  scrollbar-color:rgba(255,255,255,0.3) transparent;
+}
+
+.sidebar-header{
+  padding:2rem 1.5rem 1.25rem;
+  border-bottom:1px solid rgba(255,255,255,0.18);
+}
+.sidebar-logo{
+  font-family:'Cormorant Garamond',serif;
+  font-weight:600;
+  font-size:1.35rem;
+  color:var(--white);
+  letter-spacing:0.04em;
+}
+.sidebar-logo span{font-style:italic;color:rgba(255,255,255,0.75)}
+.sidebar-tagline{
+  font-family:'DM Mono',monospace;
+  font-size:0.58rem;
+  letter-spacing:0.16em;
+  color:rgba(255,255,255,0.55);
+  text-transform:uppercase;
+  margin-top:0.3rem;
+}
+
+.sidebar-search{
+  margin:1rem 1.25rem;
+  position:relative;
+}
+.sidebar-search input{
+  width:100%;
+  background:rgba(255,255,255,0.15);
+  border:1px solid rgba(255,255,255,0.2);
+  border-radius:var(--radius);
+  padding:0.5rem 0.75rem 0.5rem 2.25rem;
+  color:var(--white);
+  font-family:'Outfit',sans-serif;
+  font-size:0.8rem;
+  outline:none;
+  transition:border-color var(--transition);
+}
+.sidebar-search input::placeholder{color:rgba(255,255,255,0.45);font-size:0.78rem}
+.sidebar-search input:focus{border-color:rgba(255,255,255,0.5)}
+.sidebar-search svg{
+  position:absolute;left:0.65rem;top:50%;transform:translateY(-50%);
+  width:14px;height:14px;stroke:rgba(255,255,255,0.5);stroke-width:2;fill:none;
+}
+
+.sidebar-nav{
+  flex:1;
+  padding:0.5rem 0 2rem;
+}
+
+.nav-section{
+  margin-top:0.25rem;
+}
+
+.nav-section-label{
+  font-family:'DM Mono',monospace;
+  font-size:0.58rem;
+  letter-spacing:0.2em;
+  text-transform:uppercase;
+  color:rgba(255,255,255,0.55);
+  padding:1rem 1.5rem 0.4rem;
+}
+
+.nav-item{
+  display:block;
+  padding:0.5rem 1.5rem 0.5rem 1.25rem;
+  border-left:2px solid transparent;
+  text-decoration:none;
+  font-family:'Outfit',sans-serif;
+  font-size:0.82rem;
+  font-weight:400;
+  color:rgba(255,255,255,0.85);
+  transition:color var(--transition),border-color var(--transition),background var(--transition);
+  cursor:pointer;
+  position:relative;
+}
+.nav-item:hover{
+  color:var(--white);
+  border-left-color:rgba(255,255,255,0.8);
+  background:rgba(255,255,255,0.12);
+}
+.nav-item.active{
+  color:var(--white);
+  border-left-color:var(--white);
+  background:rgba(255,255,255,0.18);
+  font-weight:500;
+}
+
+.nav-sub{
+  padding-left:1rem;
+}
+.nav-sub .nav-item{
+  font-size:0.76rem;
+  color:rgba(255,255,255,0.65);
+  padding:0.35rem 1.5rem 0.35rem 1.75rem;
+}
+.nav-sub .nav-item:hover{color:var(--white)}
+.nav-sub .nav-item.active{color:var(--white);background:rgba(255,255,255,0.15)}
+
+.sidebar-footer{
+  padding:1.25rem 1.5rem;
+  border-top:1px solid rgba(255,255,255,0.18);
+  font-family:'DM Mono',monospace;
+  font-size:0.58rem;
+  letter-spacing:0.12em;
+  color:rgba(255,255,255,0.45);
+  text-transform:uppercase;
+  line-height:1.8;
+}
+
+/* ── MAIN CONTENT ── */
+#main{
+  background:var(--cream);
+  overflow-y:auto;
+  height:100vh;
+  scroll-behavior:smooth;
+}
+
+.section-block{
+  border-bottom:1px solid var(--rule);
+}
+
+/* ── SECTION HEADERS ── */
+.section-header{
+  background:linear-gradient(135deg,#528489 0%,#446e73 100%);
+  padding:4rem 4rem 3rem;
+  position:relative;
+  overflow:hidden;
+}
+.section-header::after{
+  content:'';
+  position:absolute;
+  right:-60px;top:-60px;
+  width:280px;height:280px;
+  border:1px solid rgba(0,182,227,0.1);
+  border-radius:50%;
+  pointer-events:none;
+}
+
+.section-number{
+  font-family:'DM Mono',monospace;
+  font-size:0.64rem;
+  letter-spacing:0.25em;
+  text-transform:uppercase;
+  color:#7eccd4;
+  margin-bottom:0.75rem;
+  display:flex;align-items:center;gap:0.75rem;
+}
+.section-number::after{
+  content:'';flex:1;max-width:40px;
+  height:1px;background:#528489;opacity:0.7;
+}
+
+.section-header h1{
+  font-family:'Cormorant Garamond',serif;
+  font-weight:300;
+  font-size:clamp(2.2rem,4vw,3.5rem);
+  color:var(--white);
+  line-height:1.1;
+  letter-spacing:-0.01em;
+}
+.section-header h1 em{
+  font-style:italic;color:var(--cyan);
+}
+
+.section-header p{
+  margin-top:1rem;
+  font-size:0.95rem;
+  font-weight:300;
+  color:rgba(255,255,255,0.5);
+  max-width:560px;
+  line-height:1.7;
+}
+
+/* ── CONTENT AREA ── */
+.content-area{
+  padding:3rem 4rem 4rem;
+}
+
+/* ── PROTOCOL CARD ── */
+.protocol-card{
+  background:var(--card-bg);
+  border:1px solid rgba(82,132,137,0.14);
+  border-radius:var(--radius-lg);
+  margin-bottom:1.75rem;
+  box-shadow:var(--shadow);
+  overflow:hidden;
+  transition:box-shadow var(--transition);
+}
+.protocol-card:hover{box-shadow:var(--shadow-lg)}
+
+.card-header{
+  padding:1.5rem 2rem;
+  display:flex;align-items:center;justify-content:space-between;
+  cursor:pointer;
+  border-bottom:1px solid transparent;
+  transition:border-color var(--transition),background var(--transition);
+  user-select:none;
+}
+.card-header:hover{background:rgba(82,132,137,0.03)}
+.card-open .card-header{
+  border-bottom-color:var(--rule);
+  background:rgba(82,132,137,0.03);
+}
+
+.card-title-group{display:flex;align-items:center;gap:1rem;flex:1}
+.card-icon{
+  width:38px;height:38px;
+  border-radius:8px;
+  background:linear-gradient(135deg,#528489,#446e73);
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;
+  font-size:1.1rem;
+}
+.card-title{
+  font-family:'Cormorant Garamond',serif;
+  font-weight:600;
+  font-size:1.2rem;
+  color:var(--ink);
+  letter-spacing:-0.01em;
+}
+.card-subtitle{
+  font-family:'DM Mono',monospace;
+  font-size:0.62rem;
+  letter-spacing:0.14em;
+  color:var(--muted);
+  text-transform:uppercase;
+  margin-top:0.2rem;
+}
+
+.card-chevron{
+  width:20px;height:20px;
+  stroke:var(--muted);stroke-width:2;fill:none;
+  transition:transform var(--transition);
+  flex-shrink:0;
+}
+.card-open .card-chevron{transform:rotate(180deg)}
+
+.card-body{
+  display:none;
+  padding:2rem 2rem 2.25rem;
+}
+.card-open .card-body{display:block}
+
+/* ── TYPOGRAPHY INSIDE CARDS ── */
+.protocol-section{margin-bottom:1.75rem}
+.protocol-section:last-child{margin-bottom:0}
+
+.proto-label{
+  font-family:'DM Mono',monospace;
+  font-size:0.62rem;
+  letter-spacing:0.18em;
+  text-transform:uppercase;
+  color:#528489;
+  margin-bottom:0.5rem;
+  display:flex;align-items:center;gap:0.5rem;
+}
+.proto-label::after{content:'';flex:1;height:1px;background:rgba(82,132,137,0.3)}
+
+.proto-text{
+  font-size:0.9rem;
+  line-height:1.75;
+  color:var(--ink-mid);
+  font-weight:300;
+}
+
+.proto-list{
+  list-style:none;
+  margin-top:0.5rem;
+}
+.proto-list li{
+  font-size:0.88rem;
+  line-height:1.7;
+  color:var(--ink-mid);
+  padding:0.2rem 0 0.2rem 1.25rem;
+  position:relative;
+  font-weight:300;
+}
+.proto-list li::before{
+  content:'';
+  position:absolute;left:0;top:0.7rem;
+  width:6px;height:1px;
+  background:var(--teal);
+}
+
+.proto-list.numbered{counter-reset:proto-count}
+.proto-list.numbered li{padding-left:1.75rem}
+.proto-list.numbered li::before{
+  counter-increment:proto-count;
+  content:counter(proto-count)'.';
+  width:auto;height:auto;
+  background:none;
+  font-family:'DM Mono',monospace;
+  font-size:0.68rem;
+  color:var(--teal);
+  top:0.25rem;
+}
+
+/* ── NOTE BOX ── */
+.note-box{
+  margin:1.25rem 0;
+  padding:1rem 1.25rem;
+  border-left:3px solid #528489;
+  background:rgba(82,132,137,0.07);
+  border-radius:0 var(--radius) var(--radius) 0;
+}
+.note-box .note-label{
+  font-family:'DM Mono',monospace;
+  font-size:0.62rem;
+  letter-spacing:0.16em;
+  text-transform:uppercase;
+  color:#528489;
+  margin-bottom:0.4rem;
+}
+.note-box .note-text{
+  font-size:0.86rem;
+  line-height:1.7;
+  color:var(--ink-mid);
+  font-weight:300;
+  font-style:italic;
+}
+
+/* ── WARNING BOX ── */
+.warn-box{
+  margin:1.25rem 0;
+  padding:1rem 1.25rem;
+  border-left:3px solid #e8994a;
+  background:rgba(232,153,74,0.06);
+  border-radius:0 var(--radius) var(--radius) 0;
+}
+.warn-box .note-label{color:#c07030}
+.warn-box .note-text{color:var(--ink-mid)}
+
+/* ── DATA TABLE ── */
+.proto-table{
+  width:100%;
+  border-collapse:collapse;
+  margin-top:0.75rem;
+  font-size:0.84rem;
+}
+.proto-table th{
+  background:#528489;
+  color:var(--white);
+  font-family:'DM Mono',monospace;
+  font-size:0.62rem;
+  letter-spacing:0.14em;
+  text-transform:uppercase;
+  font-weight:400;
+  padding:0.65rem 1rem;
+  text-align:left;
+}
+.proto-table td{
+  padding:0.6rem 1rem;
+  border-bottom:1px solid var(--rule);
+  color:var(--ink-mid);
+  font-weight:300;
+  line-height:1.5;
+  vertical-align:top;
+}
+.proto-table tr:nth-child(even) td{background:rgba(82,132,137,0.03)}
+.proto-table tr:last-child td{border-bottom:none}
+.proto-table .trigger{
+  font-family:'DM Mono',monospace;
+  font-size:0.75rem;
+  color:var(--teal-dark);
+  font-weight:400;
+}
+
+/* ── PEPTIDE GRID ── */
+.peptide-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(260px,1fr));
+  gap:1rem;
+  margin-top:0.75rem;
+}
+
+.peptide-tile{
+  border:1px solid rgba(82,132,137,0.18);
+  border-radius:var(--radius-lg);
+  overflow:hidden;
+  background:var(--white);
+  transition:box-shadow var(--transition),transform var(--transition);
+  cursor:pointer;
+}
+.peptide-tile:hover{
+  box-shadow:var(--shadow);
+  transform:translateY(-2px);
+}
+
+.peptide-tile-header{
+  padding:0.85rem 1rem 0.7rem;
+  background:linear-gradient(135deg,#528489,#446e73);
+  display:flex;align-items:center;gap:0.6rem;
+}
+.peptide-cat{
+  font-family:'DM Mono',monospace;
+  font-size:0.55rem;
+  letter-spacing:0.18em;
+  color:var(--cyan);
+  text-transform:uppercase;
+}
+.peptide-name{
+  font-family:'Cormorant Garamond',serif;
+  font-weight:600;
+  font-size:1.05rem;
+  color:var(--white);
+}
+
+.peptide-tile-body{
+  padding:1rem;
+}
+.peptide-field{
+  margin-bottom:0.65rem;
+}
+.peptide-field-label{
+  font-family:'DM Mono',monospace;
+  font-size:0.58rem;
+  letter-spacing:0.14em;
+  text-transform:uppercase;
+  color:var(--muted);
+  margin-bottom:0.2rem;
+}
+.peptide-field-val{
+  font-size:0.8rem;
+  line-height:1.55;
+  color:var(--ink-mid);
+  font-weight:300;
+}
+.peptide-tile-body .note-box{
+  margin:0.75rem 0 0;
+}
+.peptide-tile-body .note-box .note-text{font-size:0.78rem}
+
+.peptide-caution{
+  display:inline-flex;align-items:center;gap:0.3rem;
+  background:rgba(232,153,74,0.1);
+  border:1px solid rgba(232,153,74,0.25);
+  border-radius:2px;
+  padding:0.15rem 0.5rem;
+  font-family:'DM Mono',monospace;
+  font-size:0.6rem;
+  color:#b06820;
+  letter-spacing:0.1em;
+  text-transform:uppercase;
+  margin-top:0.5rem;
+}
+
+/* ── TAG / BADGE ── */
+.badge{
+  display:inline-block;
+  padding:0.2rem 0.6rem;
+  border-radius:2px;
+  font-family:'DM Mono',monospace;
+  font-size:0.6rem;
+  letter-spacing:0.12em;
+  text-transform:uppercase;
+  font-weight:400;
+}
+.badge-teal{background:rgba(82,132,137,0.12);color:var(--teal-dark)}
+.badge-navy{background:rgba(0,107,143,0.1);color:var(--navy)}
+.badge-cyan{background:rgba(0,182,227,0.1);color:var(--navy)}
+.badge-orange{background:rgba(232,153,74,0.12);color:#b06820}
+.badge-green{background:rgba(60,150,100,0.1);color:#2a7a55}
+
+/* ── TWO COLUMN LAYOUT ── */
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;margin-top:0.75rem}
+.three-col{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem;margin-top:0.75rem}
+
+.info-block{
+  background:var(--cream);
+  border:1px solid var(--rule);
+  border-radius:var(--radius);
+  padding:1rem 1.1rem;
+}
+.info-block .info-label{
+  font-family:'DM Mono',monospace;
+  font-size:0.6rem;
+  letter-spacing:0.16em;
+  text-transform:uppercase;
+  color:#528489;
+  margin-bottom:0.4rem;
+}
+.info-block .info-val{
+  font-size:0.85rem;
+  line-height:1.65;
+  color:var(--ink-mid);
+  font-weight:300;
+}
+
+/* ── PATIENT EDUCATION ── */
+.edu-hero{
+  background:linear-gradient(135deg,rgba(82,132,137,0.08),rgba(0,107,143,0.05));
+  border:1px solid var(--rule);
+  border-radius:var(--radius-lg);
+  padding:2rem;
+  margin-bottom:1.75rem;
+  text-align:center;
+}
+.edu-hero .edu-icon{
+  font-size:2.5rem;margin-bottom:0.75rem;
+}
+.edu-hero h2{
+  font-family:'Cormorant Garamond',serif;
+  font-weight:400;
+  font-size:2rem;
+  color:var(--teal-dark);
+  margin-bottom:0.5rem;
+}
+.edu-hero p{
+  font-size:0.92rem;
+  line-height:1.75;
+  color:var(--ink-mid);
+  font-weight:300;
+  max-width:520px;
+  margin:0 auto;
+}
+
+.pill-grid{
+  display:flex;flex-wrap:wrap;gap:0.6rem;
+  justify-content:center;
+  margin-top:1.25rem;
+}
+.pill{
+  background:var(--white);
+  border:1px solid var(--rule-strong);
+  border-radius:20px;
+  padding:0.4rem 1rem;
+  font-size:0.8rem;
+  color:var(--teal-dark);
+  font-weight:400;
+  transition:background var(--transition),color var(--transition);
+}
+.pill:hover{background:var(--teal);color:var(--white)}
+
+/* ── REFERRAL TABLE ── */
+.refer-grid{
+  display:grid;gap:0.5rem;
+  margin-top:0.75rem;
+}
+.refer-row{
+  display:grid;
+  grid-template-columns:1fr 1.5fr;
+  background:var(--white);
+  border:1px solid var(--rule);
+  border-radius:var(--radius);
+  overflow:hidden;
+}
+.refer-row.header-row{background:#528489}
+.refer-cell{
+  padding:0.65rem 1rem;
+  font-size:0.84rem;
+  color:var(--ink-mid);
+  font-weight:300;
+  border-right:1px solid var(--rule);
+}
+.refer-cell:last-child{border-right:none}
+.refer-cell.trigger-cell{
+  font-family:'DM Mono',monospace;
+  font-size:0.72rem;
+  color:var(--teal-dark);
+  font-weight:400;
+}
+.header-row .refer-cell{
+  color:var(--white);
+  font-family:'DM Mono',monospace;
+  font-size:0.6rem;
+  letter-spacing:0.15em;
+  text-transform:uppercase;
+  font-weight:400;
+  border-color:rgba(255,255,255,0.1);
+}
+
+/* ── COVER SIGNAL ── */
+.cover-signal{
+  display:flex;align-items:center;gap:1.25rem;
+}
+.signal-label{
+  font-family:'DM Mono',monospace;
+  font-size:0.58rem;
+  letter-spacing:0.18em;
+  color:rgba(255,255,255,0.55);
+  text-transform:uppercase;
+}
+
+/* ── ANIMATIONS ── */
+@keyframes fadeUp{
+  from{opacity:0;transform:translateY(16px)}
+  to{opacity:1;transform:translateY(0)}
+}
+@keyframes fadeIn{
+  from{opacity:0}
+  to{opacity:1}
+}
+@keyframes pulse{
+  0%,100%{opacity:1;transform:scale(1)}
+  50%{opacity:0.5;transform:scale(0.85)}
+}
+
+/* ── SCROLL REVEAL ── */
+.reveal{opacity:0;transform:translateY(12px);transition:opacity 0.55s ease,transform 0.55s ease}
+.reveal.visible{opacity:1;transform:none}
+
+/* ── STICKY SECTION TAB ── */
+.sticky-tab{
+  position:sticky;top:0;z-index:10;
+  background:rgba(247,242,234,0.92);
+  backdrop-filter:blur(12px);
+  -webkit-backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--rule);
+  padding:0.6rem 4rem;
+  display:flex;align-items:center;justify-content:space-between;
+}
+.sticky-tab-name{
+  font-family:'DM Mono',monospace;
+  font-size:0.64rem;
+  letter-spacing:0.2em;
+  text-transform:uppercase;
+  color:#528489;
+}
+.sticky-tab-back{
+  font-family:'DM Mono',monospace;
+  font-size:0.6rem;
+  letter-spacing:0.15em;
+  text-transform:uppercase;
+  color:var(--muted);
+  text-decoration:none;
+  cursor:pointer;
+  transition:color var(--transition);
+}
+.sticky-tab-back:hover{color:var(--teal)}
+
+/* ── MOBILE / RESPONSIVE ── */
+@media(max-width:900px){
+  :root{--sidebar-w:0px}
+  #app{grid-template-columns:1fr}
+  #sidebar{display:none}
+  .section-header{padding:2.5rem 2rem 2rem}
+  .content-area{padding:2rem}
+  .two-col,.three-col{grid-template-columns:1fr}
+  .peptide-grid{grid-template-columns:1fr}
+  .sticky-tab{padding:0.6rem 1.5rem}
+  .cover-top,.cover-bottom{padding:1.5rem}
+  .cover-center{padding:3rem 1.5rem}
+}
+
+/* ── PRINT STYLES ── */
+@media print{
+  #cover{display:none}
+  #sidebar{display:none}
+  #app{display:block}
+  #main{height:auto;overflow:visible}
+  .card-body{display:block!important}
+  .section-header{background:var(--teal-deep)!important;-webkit-print-color-adjust:exact}
+}
+</style>
+</head>
+<body>
+
+<!-- ════════════════════════════
+     COVER PAGE
+════════════════════════════ -->
+<section id="cover">
+  <div class="cover-arc2"></div>
+  <div class="cover-arc3"></div>
+
+  <div class="cover-top">
+    <div class="cover-wordmark">Val<span>è</span>re <em style="font-style:normal;font-weight:300;opacity:0.5">by</em> CDR Health</div>
+    <div class="cover-badge">Confidential · Clinical Use Only</div>
+  </div>
+
+  <div class="cover-center">
+    <div class="cover-eyebrow">Valère Clinical Field Manual — 2025</div>
+    <h1 class="cover-title">The Val<em>è</em>re<br>Signal</h1>
+    <div class="cover-subtitle">Clinical Playbook</div>
+    <div class="cover-rule"></div>
+    <p class="cover-desc">
+      A precision reference for hormone optimization, peptide therapy, IV protocols, and patient intake — built for providers who work where physiology meets purpose.
+    </p>
+    <div class="cover-cta">
+      <a href="#app" onclick="document.getElementById('app').scrollIntoView({behavior:'smooth'});return false;">Enter the Playbook →</a>
+    </div>
+  </div>
+
+  <div class="cover-bottom">
+    <div class="cover-meta">
+      Melani Davis, MSN, APRN, FNP-C &nbsp;·&nbsp; 313 Norton Drive Suite 101B Tallahassee FL &nbsp;·&nbsp; (850) 738-7977
+    </div>
+    <div class="cover-signal">
+      <span class="signal-label">System Active</span>
+      <div class="signal-dots">
+        <span></span><span></span><span></span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════
+     APP LAYOUT
+════════════════════════════ -->
+<div id="app">
+
+  <!-- ── SIDEBAR ── -->
+  <nav id="sidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-logo">Val<span>è</span>re Signal</div>
+      <div class="sidebar-tagline">Clinical Playbook · 2025</div>
+    </div>
+
+    <div class="sidebar-search">
+      <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" placeholder="Search protocols..." id="search-input">
+    </div>
+
+    <div class="sidebar-nav">
+      <div class="nav-section">
+        <div class="nav-section-label">Intake</div>
+        <a class="nav-item" onclick="goto('s1')">§1 — Intake & Risk Stratification</a>
+        <div class="nav-sub">
+          <a class="nav-item" onclick="goto('s1-intake')">Comprehensive Intake</a>
+          <a class="nav-item" onclick="goto('s1-eligibility')">Eligibility & Exclusions</a>
+          <a class="nav-item" onclick="goto('s1-baseline')">Baseline Lab Evaluation</a>
+        </div>
+      </div>
+      <div class="nav-section">
+        <div class="nav-section-label">Hormone Therapy</div>
+        <a class="nav-item" onclick="goto('s2')">§2 — Hormone Protocols</a>
+        <div class="nav-sub">
+          <a class="nav-item" onclick="goto('s2-estradiol')">Estradiol</a>
+          <a class="nav-item" onclick="goto('s2-progesterone')">Progesterone</a>
+          <a class="nav-item" onclick="goto('s2-trt')">Testosterone (Men)</a>
+          <a class="nav-item" onclick="goto('s2-hypo')">Hypogonadism Evaluation</a>
+          <a class="nav-item" onclick="goto('s2-poly')">Polycythemia Pathway</a>
+        </div>
+      </div>
+      <div class="nav-section">
+        <div class="nav-section-label">Peptide Therapy</div>
+        <a class="nav-item" onclick="goto('s3')">§3 — Peptide Protocols</a>
+        <div class="nav-sub">
+          <a class="nav-item" onclick="goto('s3-framework')">Clinical Framework</a>
+          <a class="nav-item" onclick="goto('s3-safety')">Safety Screening</a>
+          <a class="nav-item" onclick="goto('s3-metabolic')">Metabolic & Weight</a>
+          <a class="nav-item" onclick="goto('s3-tissue')">Tissue Repair</a>
+          <a class="nav-item" onclick="goto('s3-neuro')">Neurocognitive & Sleep</a>
+          <a class="nav-item" onclick="goto('s3-immune')">Immune Support</a>
+          <a class="nav-item" onclick="goto('s3-other')">Other Categories</a>
+        </div>
+      </div>
+      <div class="nav-section">
+        <div class="nav-section-label">IV Therapy</div>
+        <a class="nav-item" onclick="goto('s4')">§4 — IV Therapy Protocol</a>
+      </div>
+      <div class="nav-section">
+        <div class="nav-section-label">Patient Education</div>
+        <a class="nav-item" onclick="goto('s5')">§5 — Peptides 101</a>
+      </div>
+      <div class="nav-section">
+        <div class="nav-section-label">Lab Reference</div>
+        <a class="nav-item" onclick="goto('s6')">§6 — Lab Ranges & Interpretation</a>
+        <div class="nav-sub">
+          <a class="nav-item" onclick="goto('s6-thyroid')">Thyroid Panel</a>
+          <a class="nav-item" onclick="goto('s6-hormones')">Sex Hormones</a>
+          <a class="nav-item" onclick="goto('s6-metabolic')">Metabolic & Cardiometabolic</a>
+          <a class="nav-item" onclick="goto('s6-nutrients')">Nutrients & Inflammation</a>
+          <a class="nav-item" onclick="goto('s6-adrenal')">Adrenal & Stress</a>
+          <a class="nav-item" onclick="goto('s6-hematologic')">Hematologic</a>
+        </div>
+      </div>
+      <div class="nav-section">
+        <div class="nav-section-label">Supplements</div>
+        <a class="nav-item" onclick="goto('s7')">§7 — Supplement Reference</a>
+        <div class="nav-sub">
+          <a class="nav-item" onclick="goto('s7-thyroid')">Thyroid Support</a>
+          <a class="nav-item" onclick="goto('s7-hormones')">Hormone Balance</a>
+          <a class="nav-item" onclick="goto('s7-cardio')">Cardiometabolic</a>
+          <a class="nav-item" onclick="goto('s7-gut')">Gut & Microbiome</a>
+          <a class="nav-item" onclick="goto('s7-neuro')">Cognition & Mood</a>
+          <a class="nav-item" onclick="goto('s7-immune')">Immune & Inflammation</a>
+          <a class="nav-item" onclick="goto('s7-longevity')">Longevity & Mitochondria</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="sidebar-footer">
+      Valère by CDR Health<br>
+      Tallahassee, FL 32308<br>
+      Valerebycdr.com
+    </div>
+  </nav>
+
+  <!-- ════════════════════════════
+       MAIN CONTENT
+  ════════════════════════════ -->
+  <main id="main">
+
+    <!-- ─── SECTION 1: INTAKE ─── -->
+    <div class="section-block" id="s1">
+      <div class="section-header">
+        <div class="section-number">Section 01</div>
+        <h1>Patient <em>Intake</em> &<br>Risk Stratification</h1>
+        <p>A standardized, hormone-focused intake process ensuring safe patient selection, appropriate risk stratification, and individualized treatment planning.</p>
+      </div>
+      <div class="sticky-tab">
+        <span class="sticky-tab-name">§1 · Patient Intake & Risk Stratification</span>
+        <a class="sticky-tab-back" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑ Top</a>
+      </div>
+      <div class="content-area">
+
+        <div id="s1-intake" class="protocol-card reveal">
+          <div class="card-header" onclick="toggleCard(this)">
+            <div class="card-title-group">
+              <div class="card-icon">📋</div>
+              <div>
+                <div class="card-title">Comprehensive Hormone-Focused Intake</div>
+                <div class="card-subtitle">1.1 · New Patient Protocol · All Service Lines</div>
+              </div>
+            </div>
+            <svg class="card-chevron" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+          </div>
+          <div class="card-body">
+            <div class="protocol-section">
+              <div class="proto-label">Purpose</div>
+              <div class="proto-text">To establish a standardized, hormone-focused intake process that ensures safe patient selection, appropriate risk stratification, and individualized treatment planning for hormone optimization, peptide therapy, longevity, and adjunct metabolic support services at Valère.</div>
+            </div>
+            <div class="protocol-section" id="s1-eligibility">
+              <div class="proto-label">Patient Eligibility</div>
+              <ul class="proto-list">
+                <li>Adults 18 years or older seeking optimization-focused care</li>
+                <li>Hormone-related symptoms, quality-of-life concerns, or preventive health goals</li>
+                <li>Medically stable for outpatient hormone and adjunct therapies</li>
+                <li>Agreement to longitudinal monitoring and follow-up requirements</li>
+              </ul>
+            </div>
+            <div class="protocol-section">
+              <div class="proto-label">Exclusion / Referral Criteria</div>
+              <ul class="proto-list">
+                <li>Active or uncontrolled malignancy (breast, prostate, endometrial)</li>
+                <li>Unstable cardiovascular disease (recent MI, stroke, uncontrolled arrhythmias)</li>
+                <li>Known hypercoagulable disorders without specialist clearance</li>
+                <li>Pregnancy or breastfeeding</li>
+                <li>Untreated severe psychiatric illness</li>
+                <li>Complex endocrine disorders requiring specialty management</li>
+              </ul>
+            </div>
+            <div class="note-box">
+              <div class="note-label">⚑ Provider Note — Intake Flags</div>
+              <div class="note-text">During intake, also document: (1) current hormone-blocking therapies (aromatase inhibitors, anti-androgens); (2) hormone-like supplements (phytoestrogens, DHEA, pregnenolone, adaptogens); (3) post-chemotherapy or radiation history — requires baseline evaluation before initiating any hormonal or peptide therapy.</div>
+            </div>
+            <div class="protocol-section" id="s1-baseline">
+              <div class="proto-label">Intake Components</div>
+              <div class="three-col">
+                <div class="info-block">
+                  <div class="info-label">Medical History</div>
+                  <div class="info-val">Past surgical history, family history (cardiovascular & hormone-sensitive cancers), medications, supplements, prior hormone/peptide use, allergies</div>
+                </div>
+                <div class="info-block">
+                  <div class="info-label">Symptom Assessment</div>
+                  <div class="info-val">Fatigue, brain fog, mood, sleep, weight changes, libido, muscle mass, recovery, cognitive/stress symptoms. Validated questionnaires at provider discretion.</div>
+                </div>
+                <div class="info-block">
+                  <div class="info-label">Reproductive & Sexual Health</div>
+                  <div class="info-val">Menstrual history, menopausal status, fertility goals, erectile/sexual function, contraception use, prior hormone exposure</div>
+                </div>
+                <div class="info-block">
+                  <div class="info-label">Cardiovascular & Clot Risk</div>
+                  <div class="info-val">HTN, dyslipidemia, DM, smoking, BMI/waist, clotting disorders, stroke/MI/DVT/PE history</div>
+                </div>
+                <div class="info-block">
+                  <div class="info-label">Cancer Risk Screening</div>
+                  <div class="info-val">Personal & family history of hormone-sensitive cancers, prior abnormal PSA/mammogram/Pap/endometrial biopsy, current screening compliance</div>
+                </div>
+                <div class="info-block">
+                  <div class="info-label">Baseline Labs</div>
+                  <div class="info-val">CMP, lipid panel, CBC, thyroid, sex hormone panel (T, E2, Prog, SHBG), PSA (men), HbA1c/IR markers, additional at provider discretion</div>
+                </div>
+              </div>
+            </div>
+            <div class="protocol-section">
+              <div class="proto-label">Risk Stratification</div>
+              <div class="three-col">
+                <div class="info-block" style="border-color:rgba(60,150,100,0.3)">
+                  <div class="info-label" style="color:#2a7a55">Low Risk</div>
+                  <div class="info-val">Eligible for standard hormone optimization protocols</div>
+                </div>
+                <div class="info-block" style="border-color:rgba(232,153,74,0.3)">
+                  <div class="info-label" style="color:#b06820">Moderate Risk</div>
+                  <div class="info-val">May proceed with enhanced monitoring and documented rationale</div>
+                </div>
+                <div class="info-block" style="border-color:rgba(200,60,60,0.3)">
+                  <div class="info-label" style="color:#a03030">High Risk</div>
+                  <div class="info-val">Requires specialist clearance or referral prior to initiation</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ─── SECTION 2: HORMONE THERAPY ─── -->
+    <div class="section-block" id="s2">
+      <div class="section-header">
+        <div class="section-number">Section 02</div>
+        <h1><em>Hormone</em> Therapy<br>Protocols</h1>
+        <p>Evidence-informed frameworks for estradiol, progesterone, and testosterone therapy — governed by symptom patterns, physiologic context, and individualized patient goals.</p>
+      </div>
+      <div class="sticky-tab">
+        <span class="sticky-tab-name">§2 · Hormone Therapy Protocols</span>
+        <a class="sticky-tab-back" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑ Top</a>
+      </div>
+      <div class="content-area">
+
+        <!-- ESTRADIOL -->
+        <div id="s2-estradiol" class="protocol-card reveal">
+          <div class="card-header" onclick="toggleCard(this)">
+            <div class="card-title-group">
+              <div class="card-icon">⚡</div>
+              <div>
+                <div class="card-title">Estradiol Therapy</div>
+                <div class="card-subtitle">2.1 · Oral / Transdermal / Vaginal / Pellet · Adult Female Patients</div>
+              </div>
+            </div>
+            <svg class="card-chevron" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+          </div>
+          <div class="card-body">
+            <div class="protocol-section">
+              <div class="proto-label">Clinical Oversight Principles</div>
+              <ul class="proto-list">
+                <li>Estradiol decline may be gradual or abrupt; often follows earlier progesterone decline</li>
+                <li>Decision-making guided by symptom patterns and physiologic context — not lab values alone</li>
+                <li>Route of administration materially impacts systemic exposure, risk profile, and response</li>
+                <li>Uterine status and endometrial safety must be considered in all cases of systemic exposure</li>
+                <li>Therapy aims at physiologic signaling restoration, not supraphysiologic replacement</li>
+              </ul>
+            </div>
+            <div class="protocol-section">
+              <div class="proto-label">Route-Level Oversight</div>
+              <table class="proto-table">
+                <thead><tr><th>Route</th><th>Primary Role</th><th>Key Considerations</th></tr></thead>
+                <tbody>
+                  <tr><td class="trigger">Oral Estradiol</td><td>Systemic symptom management</td><td>Hepatic first-pass metabolism; impacts SHBG, triglycerides, clotting factors; cardiometabolic/thrombotic risk assessment required</td></tr>
+                  <tr><td class="trigger">Transdermal</td><td>Systemic symptom management</td><td>Bypasses hepatic first-pass; preferred when cardiometabolic or clot-risk factors are present</td></tr>
+                  <tr><td class="trigger">Vaginal</td><td>Local urogenital support</td><td>Primarily for GSM/vulvovaginal atrophy; typically does not require progesterone co-therapy at low doses</td></tr>
+                  <tr><td class="trigger">Pellet</td><td>Sustained systemic delivery</td><td>Long duration of action; limited dose adjustability; requires careful patient selection and longitudinal monitoring</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="warn-box">
+              <div class="note-label">⚑ Risk Stratification — 3 Key Situations</div>
+              <div class="note-text">(1) Family or personal history of malignancy (hormone-sensitive cancers) — document and heighten monitoring; (2) Current use of non-hormonal hormone-like supplements (phytoestrogens, DHEA, adaptogens) — assess additive estrogenic load; (3) Other non-traditional therapies with potential endocrine interaction — document clearly.</div>
+            </div>
+            <div class="protocol-section">
+              <div class="proto-label">Escalation / Referral Thresholds</div>
+              <ul class="proto-list">
+                <li>Abnormal or unexplained uterine bleeding → Gynecology referral</li>
+                <li>Persistent spotting despite appropriate progesterone support → Gynecology</li>
+                <li>Known or suspected estrogen-sensitive malignancy → Pause therapy, oncology</li>
+                <li>New breast findings or concerning imaging → Pause therapy, further evaluation</li>
+              </ul>
+            </div>
+            <div class="protocol-section">
+              <div class="proto-label">Documentation Requirements</div>
+              <ul class="proto-list">
+                <li>Indication and clinical rationale for estradiol therapy</li>
+                <li>Route selection and oversight considerations</li>
+                <li>Uterine status and endometrial protection strategy</li>
+                <li>Summary of shared decision-making</li>
+                <li>Ongoing reassessment of benefit and risk</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- PROGESTERONE -->
+        <div id="s2-progesterone" class="protocol-card reveal">
+          <div class="card-header" onclick="toggleCard(this)">
+            <div class="card-title-group">
+              <div class="card-icon">🌙</div>
+              <div>
+                <div class="card-title">Progesterone Therapy & Endometrial Protection</div>
+                <div class="card-subtitle">2.2 · Adult Female Patients · With or Without Concurrent Estrogen</div>
+              </div>
+            </div>
+            <svg class="card-chevron" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+          </div>
+          <div class="card-body">
+            <div class="protocol-section">
+              <div class="proto-label">Core Principles</div>
+              <ul class="proto-list">
+                <li>Progesterone decline often precedes estrogen decline, particularly in perimenopause</li>
+                <li>Therapy is symptom- and pattern-driven, not lab-limited</li>
+                <li>Supports neurologic, metabolic, and reproductive balance</li>
+                <li>Goal is to restore physiologic signaling — not suppress normal function</li>
+              </ul>
+            </div>
+            <div class="protocol-section">
+              <div class="proto-label">Indications — With Estrogen Therapy</div>
+              <div class="note-box">
+                <div class="note-label">Required</div>
+                <div class="note-text">Progesterone is required for ALL women with an intact uterus receiving systemic estradiol — to protect against endometrial hyperplasia, reduce estrogen-dominant effects, and support balanced hormone signaling.</div>
+              </div>
+            </div>
+            <div class="protocol-section">
+              <div class="proto-label">Indications — Independent of Estrogen</div>
+              <table class="proto-table">
+                <thead><tr><th>Clinical Context</th><th>Presenting Patterns</th></tr></thead>
+                <tbody>
+                  <tr><td>Luteal Phase Deficiency</td><td>Shortened cycles, premenstrual spotting, second-half symptom worsening</td></tr>
+                  <tr><td>Sleep & Circadian Dysregulation</td><td>Difficulty falling/staying asleep, early morning waking, non-restorative sleep</td></tr>
+                  <tr><td>Anxiety & NS Dysregulation</td><td>Heightened anxiety, stress intolerance, mood lability, perimenstrual emotional symptoms</td></tr>
+                  <tr><td>PMS / Cyclic Symptoms</td><td>Breast tenderness, bloating, fluid retention, hormonally patterned migraines</td></tr>
+                  <tr><td>Estrogen Dominance Patterns</td><td>Heavy/painful menses, breast tenderness, migraines, worsening symptoms despite normal labs</td></tr>
+                  <tr><td>Perimenopausal Volatility</td><td>Erratic cycles, early sleep disruption, mood changes before overt estrogen decline</td></tr>
+                  <tr><td>Neurocognitive Support</td><td>Brain fog, cognitive slowing, reduced stress resilience</td></tr>
+                  <tr><td>Post-Hysterectomy</td><td>Sleep disturbance, anxiety, neurocognitive symptoms (when ovaries present or symptoms suggest benefit)</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="note-box">
+              <div class="note-label">⚑ Provider Note — Pregnancy Test</div>
+              <div class="note-text">A pregnancy test to rule out pregnancy (R/O pregnancy) is required before initiating progesterone therapy in any patient with an intact uterus and potential fertility.</div>
+            </div>
+            <div class="protocol-section">
+              <div class="proto-label">Escalation / Referral</div>
+              <ul class="proto-list">
+                <li>Abnormal uterine bleeding → Gynecology referral; pause therapy pending evaluation</li>
+                <li>Persistent or unexplained spotting → Gynecology</li>
+                <li>Suspected endometrial pathology → Pause therapy; gynecology workup</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- TRT MEN -->
+        <div id="s2-trt" class="protocol-card reveal">
+          <div class="card-header" onclick="toggleCard(this)">
+            <div class="card-title-group">
+              <div class="card-icon">🔬</div>
+              <div>
+                <div class="card-title">Testosterone Therapy for Men</div>
+                <div class="card-subtitle">2.3 · Injectable & Pellet · Adult Male Patients</div>
+              </div>
+            </div>
+            <svg class="card-chevron" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+          </div>
+          <div class="card-body">
+            <div class="protocol-section">
+              <div class="proto-label">Eligibility</div>
+              <ul class="proto-list">
+                <li>Symptoms consistent with testosterone deficiency (fatigue, reduced libido, ED, mood changes, cognitive concerns, decreased muscle mass, impaired recovery)</li>
+                <li>Laboratory evidence of low or suboptimal testosterone levels relative to age and clinical context</li>
+                <li>Absence of absolute contraindications</li>
+                <li>Full evaluation of lifestyle factors completed prior to initiation</li>
+                <li>Willingness to comply with longitudinal monitoring requirements</li>
+              </ul>
+            </div>
+            <div class="protocol-section">
+              <div class="proto-label">Exclusions / Contraindications</div>
+              <ul class="proto-list">
+                <li>Known or suspected prostate or breast cancer</li>
+                <li>Elevated PSA without appropriate evaluation</li>
+                <li>Hematocrit above acceptable thresholds</li>
+                <li>Untreated severe obstructive sleep apnea</li>
+                <li>Unstable cardiovascular disease or active thromboembolic disease</li>
+                <li>Desire for fertility without prior counseling</li>
+                <li>Strong family history of hormone-sensitive cancers — document and discuss risk before initiating</li>
+              </ul>
+            </div>
+            <div class="protocol-section">
+              <div class="proto-label">Treatment Modalities</div>
+              <div class="two-col">
+                <div class="info-block">
+                  <div class="info-label">Injectable Testosterone</div>
+                  <div class="info-val">IM or subcutaneous via FDA-approved or compounded formulations. Conservative initial dosing. Titration based on symptom response and lab monitoring. In-office or home administration with training.</div>
+                </div>
+                <div class="info-block">
+                  <div class="info-label">Testosterone Pellet</div>
+                  <div class="info-val">Subcutaneous implantation in-office under sterile technique. For patients seeking longer-acting therapy. Sustained delivery over several months. Re-implantation timing based on symptom recurrence and labs.</div>
+                </div>
+              </div>
+            </div>
+            <div class="protocol-section">
+              <div class="proto-label">TRT Monitoring Parameters</div>
+              <ul class="proto-list">
+                <li>Symptom assessment and quality-of-life review</li>
+                <li>Serum total testosterone levels</li>
+                <li>Hematocrit and hemoglobin (see Polycythemia Pathway §2.5)</li>
+                <li>Lipid profile</li>
+                <li>PSA and prostate health monitoring per age and risk factors</li>
+                <li>Blood pressure and weight trends</li>
+              </ul>
+            </div>
+            <div class="protocol-section">
+              <div class="proto-label">Risk Mitigation Strategies</div>
+              <ul class="proto-list">
+                <li>Dose or interval adjustment</li>
+                <li>Temporary suspension of therapy</li>
+                <li>Therapeutic phlebotomy or referral if indicated</li>
+                <li>Permanent discontinuation if safety thresholds exceeded</li>
+                <li>Referral to urology, cardiology, or other specialists when appropriate</li>
+              </ul>
+            </div>
+            <div class="note-box">
+              <div class="note-label">Fertility Counseling — Required</div>
+              <div class="note-text">All male patients must be counseled on the suppressive effects of testosterone therapy on spermatogenesis prior to initiation. Fertility-preserving alternatives and referral options must be discussed and documented.</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- HYPOGONADISM -->
+        <div id="s2-hypo" class="protocol-card reveal">
+          <div class="card-header" onclick="toggleCard(this)">
+            <div class="card-title-group">
+              <div class="card-icon">📊</div>
+              <div>
+                <div class="card-title">Male Hypogonadism Evaluation Protocol</div>
+                <div class="card-subtitle">2.4 · Pathologic vs. Optimization-Based Differentiation</div>
+              </div>
+            </div>
+            <svg class="card-chevron" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+          </div>
+          <div class="card-body">
+            <div class="protocol-section">
+              <div class="proto-label">Definitions</div>
+              <div class="two-col">
+                <div class="info-block">
+                  <div class="info-label">Pathologic Hypogonadism</div>
+                  <div class="info-val">Medical diagnosis defined by compatible symptoms and consistently low testosterone due to testicular or hypothalamic-pituitary dysfunction. Total testosterone &lt;300 ng/dL on two morning measurements.</div>
+                </div>
+                <div class="info-block">
+                  <div class="info-label">Testosterone Optimization</div>
+                  <div class="info-val">Symptom-guided, preventive approach for men with suboptimal levels and functional decline who do not meet disease-based thresholds. TT ~300-500 ng/dL with persistent symptoms, or low/borderline free T / adverse SHBG patterns.</div>
+                </div>
+              </div>
+            </div>
+            <div class="protocol-section">
+              <div class="proto-label">When to Refer — Quick Reference</div>
+              <div class="refer-grid">
+                <div class="refer-row header-row">
+                  <div class="refer-cell">Trigger</div>
+                  <div class="refer-cell">Action</div>
+                </div>
+                <div class="refer-row">
+                  <div class="refer-cell trigger-cell">TT &lt; 150 ng/dL</div>
+                  <div class="refer-cell">Pituitary labs, MRI brain w/ pituitary protocol, endocrinology referral</div>
+                </div>
+                <div class="refer-row">
+                  <div class="refer-cell trigger-cell">TT &lt; 200 + low/normal LH/FSH</div>
+                  <div class="refer-cell">Pituitary evaluation, MRI</div>
+                </div>
+                <div class="refer-row">
+                  <div class="refer-cell trigger-cell">Elevated prolactin</div>
+                  <div class="refer-cell">MRI, endocrinology referral</div>
+                </div>
+                <div class="refer-row">
+                  <div class="refer-cell trigger-cell">Visual changes or severe headaches</div>
+                  <div class="refer-cell">Urgent MRI</div>
+                </div>
+                <div class="refer-row">
+                  <div class="refer-cell trigger-cell">PSA elevated</div>
+                  <div class="refer-cell">Trend, urology referral</div>
+                </div>
+                <div class="refer-row">
+                  <div class="refer-cell trigger-cell">Elevated hematocrit on TRT</div>
+                  <div class="refer-cell">Adjust/hold TRT; consider hematology after phlebotomy</div>
+                </div>
+                <div class="refer-row">
+                  <div class="refer-cell trigger-cell">Desire for fertility</div>
+                  <div class="refer-cell">Counsel, consider alternatives, urology referral</div>
+                </div>
+              </div>
+            </div>
+            <div class="protocol-section">
+              <div class="proto-label">Pituitary Evaluation Indications</div>
+              <div class="note-box">
+                <div class="note-label">Red Flags — Act Immediately</div>
+                <div class="note-text">Severe headaches, visual changes, galactorrhea, multiple pituitary hormone abnormalities. Action: pituitary labs + MRI brain with pituitary protocol + endocrinology referral. TRT may be deferred pending evaluation.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- POLYCYTHEMIA -->
+        <div id="s2-poly" class="protocol-card reveal">
+          <div class="card-header" onclick="toggleCard(this)">
+            <div class="card-title-group">
+              <div class="card-icon">🩸</div>
+              <div>
+                <div class="card-title">Polycythemia Management Pathway</div>
+                <div class="card-subtitle">2.5 · TRT-Related · Thrombotic Risk Mitigation</div>
+              </div>
+            </div>
+            <svg class="card-chevron" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+          </div>
+          <div class="card-body">
+            <div class="protocol-section">
+              <div class="proto-label">Definition</div>
+              <div class="proto-text">Polycythemia is defined as a hematocrit exceeding established safety thresholds or a clinically significant rise from baseline attributable to testosterone therapy.</div>
+            </div>
+            <div class="protocol-section">
+              <div class="proto-label">Risk Assessment Factors</div>
+              <ul class="proto-list">
+                <li>Degree of hematocrit elevation</li>
+                <li>Presence of symptoms: headache, dizziness, flushing</li>
+                <li>Cardiovascular and thrombotic risk factors</li>
+                <li>Testosterone dose, formulation, and delivery modality</li>
+              </ul>
+            </div>
+            <div class="protocol-section">
+              <div class="proto-label">Management Strategies</div>
+              <ul class="proto-list">
+                <li>Therapeutic phlebotomy when clinically indicated — preferred if staying on TRT</li>
+                <li>Dose reduction or extension of dosing interval</li>
+                <li>Temporary suspension of testosterone therapy</li>
+                <li>Transition to an alternative delivery modality</li>
+                <li>Referral to hematology or other specialists if required</li>
+              </ul>
+            </div>
+            <div class="warn-box">
+              <div class="note-label">Immediate Escalation Required If</div>
+              <div class="note-text">Hematocrit continues to rise despite intervention · Thrombotic symptoms develop · Patient becomes non-adherent with monitoring</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ─── SECTION 3: PEPTIDE THERAPY ─── -->
+    <div class="section-block" id="s3">
+      <div class="section-header">
+        <div class="section-number">Section 03</div>
+        <h1><em>Peptide</em> Therapy<br>Protocols</h1>
+        <p>Clinically governed, physiology-driven peptide selection — organized by therapeutic category with safety screening, dosing patterns, and Valère counseling emphasis.</p>
+      </div>
+      <div class="sticky-tab">
+        <span class="sticky-tab-name">§3 · Peptide Therapy</span>
+        <a class="sticky-tab-back" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑ Top</a>
+      </div>
+      <div class="content-area">
+
+        <!-- FRAMEWORK -->
+        <div id="s3-framework" class="protocol-card reveal">
+          <div class="card-header" onclick="toggleCard(this)">
+            <div class="card-title-group">
+              <div class="card-icon">🧬</div>
+              <div>
+                <div class="card-title">Peptide Therapy — Clinical Oversight Framework</div>
+                <div class="card-subtitle">3.1 · Governance · All Peptide Therapies</div>
+              </div>
+            </div>
+            <svg class="card-chevron" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+          </div>
+          <div class="card-body">
+            <div class="protocol-section">
+              <div class="proto-label">Clinical Oversight Principles</div>
+              <ul class="proto-list">
+                <li>Peptides are signaling molecules that modulate physiologic pathways — not hormone replacements</li>
+                <li>Therapeutic intent is functional optimization, tissue support, or physiologic restoration — not disease substitution</li>
+                <li>Avoid polypharmacy or indiscriminate stacking</li>
+                <li>Risk-benefit considerations vary by peptide class, mechanism, and patient profile</li>
+                <li>Ongoing reassessment of efficacy, tolerability, and continued indication is essential</li>
+              </ul>
+            </div>
+            <div class="protocol-section">
+              <div class="proto-label">Peptide Categories Overview</div>
+              <table class="proto-table">
+                <thead><tr><th>Category</th><th>Primary Clinical Focus</th><th>Key Oversight</th></tr></thead>
+                <tbody>
+                  <tr><td>Growth Hormone Secretagogues</td><td>Body composition, recovery, sleep, metabolic signaling</td><td>Monitor IGF-1 trends, fluid retention, glucose response, long-term necessity</td></tr>
+                  <tr><td>Metabolic Peptides</td><td>Insulin sensitivity, appetite signaling, fat metabolism</td><td>Cardiometabolic risk, GI tolerability, weight trajectory</td></tr>
+                  <tr><td>Tissue Repair & Regenerative</td><td>Injury recovery, connective tissue, inflammation modulation</td><td>Time-limited courses; reassess healing response</td></tr>
+                  <tr><td>Neurocognitive / Sleep</td><td>Sleep quality, stress response, cognitive support</td><td>Monitor neuropsychiatric response and sleep architecture</td></tr>
+                  <tr><td>Immune / Inflammatory</td><td>Immune balance, inflammatory regulation</td><td>Avoid chronic use without reassessment; evaluate infection or autoimmune context</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="protocol-section">
+              <div class="proto-label">Valère Clinical Standards</div>
+              <ul class="proto-list">
+                <li><strong>Indication-driven, not trend-driven</strong> — select based on clinical appropriateness, not social media influence</li>
+                <li><strong>Shared decision-making with documented counseling</strong> — mechanisms, outcomes, risks, and alternatives</li>
+                <li><strong>Conservative starts, intentional titration</strong> — begin low, titrate methodically based on clinical endpoints</li>
+                <li><strong>Clear stop-points and monitoring plans</strong> — define success, failure, and discontinuation criteria upfront</li>
+                <li><strong>Avoid stacking without rationale</strong> — combination regimens require documented justification</li>
+              </ul>
+            </div>
+            <div class="note-box">
+              <div class="note-label">Regulatory Note</div>
+              <div class="note-text">Availability, compounding practices, and regulatory status vary by agent and jurisdiction. Providers must verify current regulatory standing and sourcing standards before prescribing.</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- SAFETY SCREENING -->
+        <div id="s3-safety" class="protocol-card reveal">
+          <div class="card-header" onclick="toggleCard(this)">
+            <div class="card-title-group">
+              <div class="card-icon">🛡️</div>
+              <div>
+                <div class="card-title">Safety Screening Requirements</div>
+                <div class="card-subtitle">3.2 · Required Before Any Peptide Initiation</div>
+              </div>
+            </div>
+            <svg class="card-chevron" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+          </div>
+          <div class="card-body">
+            <div class="protocol-section">
+              <div class="proto-label">Mandatory Screening Checklist</div>
+              <ul class="proto-list numbered">
+                <li><strong>Pregnancy or Breastfeeding Status</strong> — Absolute contraindication for nearly all peptide therapies due to unknown fetal/infant effects and lack of safety data.</li>
+                <li><strong>Active or Recent Malignancy</strong> — Many peptides have theoretical or demonstrated proliferative effects. Obtain oncologic history; consider oncology consultation for patients within 5 years of cancer diagnosis.</li>
+                <li><strong>Thyroid Cancer or MEN2 History</strong> — Mandatory before GLP-1 receptor agonists (black box warning for medullary thyroid carcinoma). Include family history assessment.</li>
+                <li><strong>Pituitary Pathology</strong> — Required before GH-axis peptides. Document history of pituitary adenoma, acromegaly, or sellar lesions. Consider baseline brain MRI if clinical suspicion exists.</li>
+                <li><strong>Significant Cardiovascular Disease</strong> — Assess for uncontrolled hypertension, recent MI, unstable angina, heart failure, or arrhythmias. Particularly important for peptides affecting heart rate, BP, or metabolic demand.</li>
+                <li><strong>Psychiatric Instability</strong> — Screen for active mood disorders, psychosis, or severe anxiety before prescribing central appetite suppressants or neuropeptides. Coordinate with mental health providers when appropriate.</li>
+              </ul>
+            </div>
+            <div class="note-box">
+              <div class="note-label">Documentation Standard</div>
+              <div class="note-text">All safety screening must be documented using standardized templates within the EHR. Contraindication overrides require attending physician approval and detailed clinical justification.</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- METABOLIC PEPTIDES -->
+        <div id="s3-metabolic" class="protocol-card reveal">
+          <div class="card-header" onclick="toggleCard(this)">
+            <div class="card-title-group">
+              <div class="card-icon">⚖️</div>
+              <div>
+                <div class="card-title">Metabolic & Weight Peptides</div>
+                <div class="card-subtitle">3.3 · AOD-9604 · hGH 176-191 · Cagrilintide · Semaglutide · Tirzepatide · Tesofensine</div>
+              </div>
+            </div>
+            <svg class="card-chevron" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+          </div>
+          <div class="card-body">
+            <div class="peptide-grid">
+
+              <div class="peptide-tile">
+                <div class="peptide-tile-header">
+                  <div><div class="peptide-cat">Metabolic</div><div class="peptide-name">AOD-9604</div></div>
+                </div>
+                <div class="peptide-tile-body">
+                  <div class="peptide-field"><div class="peptide-field-label">Best-Fit Goals</div><div class="peptide-field-val">Fat metabolism support, body composition optimization — targeted lipolysis without full GH exposure</div></div>
+                  <div class="peptide-field"><div class="peptide-field-label">Mechanism</div><div class="peptide-field-val">Supports lipolysis signaling pathways without triggering full spectrum GH receptor activity</div></div>
+                  <div class="peptide-field"><div class="peptide-field-label">Dosing</div><div class="peptide-field-val">0.25–0.5 mg SQ daily, AM or pre-exercise</div></div>
+                  <div class="peptide-caution">⚠ Avoid: pregnancy, active malignancy, uncontrolled metabolic disease</div>
+                  <div class="note-box" style="margin-top:0.75rem"><div class="note-label">Valère Emphasis</div><div class="note-text">Adjunct to protein intake, resistance training, and restorative sleep — not standalone. Set realistic timeline expectations.</div></div>
+                </div>
+              </div>
+
+              <div class="peptide-tile">
+                <div class="peptide-tile-header">
+                  <div><div class="peptide-cat">Metabolic</div><div class="peptide-name">hGH Fragment 176-191</div></div>
+                </div>
+                <div class="peptide-tile-body">
+                  <div class="peptide-field"><div class="peptide-field-label">Best-Fit Goals</div><div class="peptide-field-val">Fat loss support, body composition refinement via targeted fat-metabolism signaling</div></div>
+                  <div class="peptide-field"><div class="peptide-field-label">Mechanism</div><div class="peptide-field-val">Targeted fat-metabolism signaling via specific GH fragment activity</div></div>
+                  <div class="peptide-field"><div class="peptide-field-label">Dosing</div><div class="peptide-field-val">250–500 mcg SQ daily; divided doses or timed around fasting windows to optimize lipolytic signaling</div></div>
+                  <div class="peptide-caution">⚠ Avoid: pregnancy, active cancer, uncontrolled diabetes</div>
+                  <div class="note-box" style="margin-top:0.75rem"><div class="note-label">Valère Emphasis</div><div class="note-text">Does not replace caloric awareness, protein sufficiency, or movement. Monitor injection-site reactions and energy changes.</div></div>
+                </div>
+              </div>
+
+              <div class="peptide-tile">
+                <div class="peptide-tile-header">
+                  <div><div class="peptide-cat">Metabolic</div><div class="peptide-name">Cagrilintide</div></div>
+                </div>
+                <div class="peptide-tile-body">
+                  <div class="peptide-field"><div class="peptide-field-label">Best-Fit Goals</div><div class="peptide-field-val">Sustained satiety support; patients not responding to other metabolic interventions</div></div>
+                  <div class="peptide-field"><div class="peptide-field-label">Mechanism</div><div class="peptide-field-val">Prolonged amylin-pathway appetite signaling — enhanced satiety and reduced meal frequency</div></div>
+                  <div class="peptide-field"><div class="peptide-field-label">Dosing</div><div class="peptide-field-val">0.1–0.5 mg SQ weekly; slow titration based on tolerability</div></div>
+                  <div class="peptide-field"><div class="peptide-field-label">Tolerability</div><div class="peptide-field-val">Nausea and early satiety common during titration; GI symptoms typically diminish after 2–4 weeks</div></div>
+                  <div class="peptide-caution">⚠ Avoid: pregnancy, gastroparesis, pancreatitis hx, IBD (judgment required)</div>
+                  <div class="note-box" style="margin-top:0.75rem"><div class="note-label">Valère Emphasis</div><div class="note-text">Gradual appetite reduction — not immediate weight loss. Protein prioritization essential to preserve lean mass.</div></div>
+                </div>
+              </div>
+
+              <div class="peptide-tile">
+                <div class="peptide-tile-header">
+                  <div><div class="peptide-cat">GLP-1 Class</div><div class="peptide-name">Semaglutide / Liraglutide</div></div>
+                </div>
+                <div class="peptide-tile-body">
+                  <div class="peptide-field"><div class="peptide-field-label">Best-Fit Goals</div><div class="peptide-field-val">Weight loss, metabolic control, appetite regulation, glycemic optimization in insulin-resistant patients</div></div>
+                  <div class="peptide-field"><div class="peptide-field-label">Mechanism</div><div class="peptide-field-val">Central GLP-1 receptor activation — appetite reduction, enhanced insulin secretion, suppressed glucagon</div></div>
+                  <div class="peptide-field"><div class="peptide-field-label">Dosing</div><div class="peptide-field-val">Semaglutide: 0.25–2.4 mg SQ weekly (titrate q4wk). Liraglutide: 0.6–3 mg SQ daily (titrate weekly).</div></div>
+                  <div class="peptide-field"><div class="peptide-field-label">Tolerability</div><div class="peptide-field-val">Nausea, vomiting, diarrhea, constipation common during titration. Rare: pancreatitis, gallbladder disease.</div></div>
+                  <div class="peptide-caution">⚠ Avoid: medullary thyroid CA hx, MEN2, pregnancy, gastroparesis</div>
+                  <div class="note-box" style="margin-top:0.75rem"><div class="note-label">Valère Emphasis</div><div class="note-text">Slow titration essential. Protein prioritization prevents lean mass loss. Realistic weight loss trajectories + lifestyle integration are foundational.</div></div>
+                </div>
+              </div>
+
+              <div class="peptide-tile">
+                <div class="peptide-tile-header">
+                  <div><div class="peptide-cat">GLP-1/GIP Dual</div><div class="peptide-name">Tirzepatide</div></div>
+                </div>
+                <div class="peptide-tile-body">
+                  <div class="peptide-field"><div class="peptide-field-label">Best-Fit Goals</div><div class="peptide-field-val">Significant weight loss, metabolic syndrome, T2DM control, robust appetite regulation</div></div>
+                  <div class="peptide-field"><div class="peptide-field-label">Mechanism</div><div class="peptide-field-val">Dual GLP-1 + GIP receptor activation — enhanced insulin secretion, glucagon suppression, slowed gastric emptying</div></div>
+                  <div class="peptide-field"><div class="peptide-field-label">Dosing</div><div class="peptide-field-val">Start 2.5 mg SQ weekly × 4 wks, then increase 2.5 mg q4wks based on tolerability. Max 15 mg weekly.</div></div>
+                  <div class="peptide-field"><div class="peptide-field-label">Tolerability</div><div class="peptide-field-val">GI side effects common; improve over time. Rare: pancreatitis, gallbladder disease, hypoglycemia with insulin/sulfonylureas.</div></div>
+                  <div class="peptide-caution">⚠ Avoid: medullary thyroid CA hx, MEN2, pregnancy, severe gastroparesis, pancreatitis hx</div>
+                  <div class="note-box" style="margin-top:0.75rem"><div class="note-label">Valère Emphasis</div><div class="note-text">Protein 1.2–1.6 g/kg to preserve lean mass. Average WL: 15–20% body weight over 6–12 months with lifestyle modification. Not a standalone solution.</div></div>
+                </div>
+              </div>
+
+              <div class="peptide-tile">
+                <div class="peptide-tile-header">
+                  <div><div class="peptide-cat">Metabolic</div><div class="peptide-name">Tesofensine</div></div>
+                </div>
+                <div class="peptide-tile-body">
+                  <div class="peptide-field"><div class="peptide-field-label">Best-Fit Goals</div><div class="peptide-field-val">Appetite suppression in non-responders who can tolerate CNS stimulation</div></div>
+                  <div class="peptide-field"><div class="peptide-field-label">Mechanism</div><div class="peptide-field-val">Central monoamine reuptake inhibition (serotonin, norepinephrine, dopamine) — reduced hunger + increased energy expenditure</div></div>
+                  <div class="peptide-field"><div class="peptide-field-label">Dosing</div><div class="peptide-field-val">0.5–1 mg orally daily, AM to minimize sleep disruption</div></div>
+                  <div class="peptide-field"><div class="peptide-field-label">Tolerability</div><div class="peptide-field-val">Increased HR, insomnia, anxiety, dry mouth, restlessness. Monitor cardiovascular parameters closely.</div></div>
+                  <div class="peptide-caution">⚠ Avoid: CVD, uncontrolled HTN, anxiety/panic disorder, substance use hx, MAOIs/SSRIs</div>
+                  <div class="note-box" style="margin-top:0.75rem"><div class="note-label">Valère Emphasis</div><div class="note-text">Potent central appetite suppressant with significant CV and psychiatric considerations. Baseline + ongoing HR/BP monitoring is mandatory.</div></div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+        <!-- TISSUE REPAIR -->
+        <div id="s3-tissue" class="protocol-card reveal">
+          <div class="card-header" onclick="toggleCard(this)">
+            <div class="card-title-group">
+              <div class="card-icon">🩹</div>
+              <div>
+                <div class="card-title">Tissue Repair & Recovery Peptides</div>
+                <div class="card-subtitle">3.4 · BPC-157 · TB-500 · ARA-290 · KPV</div>
+              </div>
+            </div>
+            <svg class="card-chevron" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+          </div>
+          <div class="card-body">
+            <div class="peptide-grid">
+
+              <div class="peptide-tile">
+                <div class="peptide-tile-header">
+                  <div><div class="peptide-cat">Tissue Repair</div><div class="peptide-name">BPC-157</div></div>
+                </div>
+                <div class="peptide-tile-body">
+                  <div class="peptide-field"><div class="peptide-field-label">Best-Fit Goals</div><div class="peptide-field-val">Tendon/ligament repair, gut healing (leaky gut, IBD), joint support, post-surgical recovery, chronic pain associated with tissue damage</div></div>
+                  <div class="peptide-field"><div class="peptide-field-label">Mechanism</div><div class="peptide-field-val">Angiogenesis and tissue repair via growth factor modulation and endothelial protection; cytoprotective signaling</div></div>
+                  <div class="peptide-field"><div class="peptide-field-label">Dosing</div><div class="peptide-field-val">200–500 mcg daily SQ or oral (depending on target tissue). Duration: 4–8 weeks with midpoint assessment.</div></div>
+                  <div class="peptide-field"><div class="peptide-field-label">Tolerability</div><div class="peptide-field-val">Generally well tolerated. Mild injection-site reactions possible. Some transient GI changes during initial use.</div></div>
+                  <div class="peptide-caution">⚠ Avoid: pregnancy, active cancer (proliferative risk)</div>
+                  <div class="note-box" style="margin-top:0.75rem"><div class="note-label">Valère Emphasis</div><div class="note-text">Not a substitute for PT, loading, or biomechanical correction. Accelerates healing when combined with proper rehabilitation.</div></div>
+                </div>
+              </div>
+
+              <div class="peptide-tile">
+                <div class="peptide-tile-header">
+                  <div><div class="peptide-cat">Tissue Repair</div><div class="peptide-name">TB-500 (Thymosin Beta-4)</div></div>
+                </div>
+                <div class="peptide-tile-body">
+                  <div class="peptide-field"><div class="peptide-field-label">Best-Fit Goals</div><div class="peptide-field-val">Wound healing, recovery acceleration post-injury/surgery, chronic inflammatory conditions affecting connective tissue</div></div>
+                  <div class="peptide-field"><div class="peptide-field-label">Mechanism</div><div class="peptide-field-val">Cellular migration and inflammation modulation via actin regulation — faster tissue remodeling and reduced chronic inflammation</div></div>
+                  <div class="peptide-field"><div class="peptide-field-label">Dosing</div><div class="peptide-field-val">2–5 mg SQ weekly. Front-load during acute phase, then transition to maintenance dosing for chronic conditions.</div></div>
+                  <div class="peptide-caution">⚠ Avoid: active malignancy (proliferative risk)</div>
+                  <div class="note-box" style="margin-top:0.75rem"><div class="note-label">Valère Emphasis</div><div class="note-text">Synergistic with BPC-157 in some protocols — but stacking requires clinical justification, not default practice. Adequate protein + micronutrient status essential.</div></div>
+                </div>
+              </div>
+
+              <div class="peptide-tile">
+                <div class="peptide-tile-header">
+                  <div><div class="peptide-cat">Neuropathic Pain</div><div class="peptide-name">ARA-290</div></div>
+                </div>
+                <div class="peptide-tile-body">
+                  <div class="peptide-field"><div class="peptide-field-label">Best-Fit Goals</div><div class="peptide-field-val">Neuropathic pain, inflammatory modulation with nerve involvement, chronic pain syndromes resistant to standard therapies</div></div>
+                  <div class="peptide-field"><div class="peptide-field-label">Mechanism</div><div class="peptide-field-val">EPO-receptor-related anti-inflammatory signaling — modulates cytokine activity and supports nerve tissue protection without erythropoietic effects</div></div>
+                  <div class="peptide-field"><div class="peptide-field-label">Dosing</div><div class="peptide-field-val">4–8 mg SQ daily. Trial period of 2–4 weeks before committing to longer-term therapy.</div></div>
+                  <div class="note-box" style="margin-top:0.75rem"><div class="note-label">Valère Emphasis</div><div class="note-text">Reserved for complex cases where simpler interventions have failed. Neuropathic pain often requires 4–6 weeks of consistent use before meaningful improvement.</div></div>
+                </div>
+              </div>
+
+              <div class="peptide-tile">
+                <div class="peptide-tile-header">
+                  <div><div class="peptide-cat">Anti-Inflammatory</div><div class="peptide-name">KPV</div></div>
+                </div>
+                <div class="peptide-tile-body">
+                  <div class="peptide-field"><div class="peptide-field-label">Best-Fit Goals</div><div class="peptide-field-val">Inflammatory skin conditions (dermatitis, psoriasis, acne), GI inflammation (UC, Crohn's adjunct), localized inflammatory pain</div></div>
+                  <div class="peptide-field"><div class="peptide-field-label">Mechanism</div><div class="peptide-field-val">Cytokine modulation via alpha-MSH-derived tripeptide activity — reduces inflammatory markers and supports local tissue healing</div></div>
+                  <div class="peptide-field"><div class="peptide-field-label">Dosing</div><div class="peptide-field-val">200–300 mcg daily SQ (systemic inflammatory conditions) or topically (skin-focused applications)</div></div>
+                  <div class="note-box" style="margin-top:0.75rem"><div class="note-label">Valère Emphasis</div><div class="note-text">Useful when patients prefer peptide-based alternatives to corticosteroids. Combine with topical therapies and address underlying triggers (diet, allergens, microbiome).</div></div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+        <!-- NEUROCOGNITIVE -->
+        <div id="s3-neuro" class="protocol-card reveal">
+          <div class="card-header" onclick="toggleCard(this)">
+            <div class="card-title-group">
+              <div class="card-icon">🧠</div>
+              <div>
+                <div class="card-title">Neurocognitive & Sleep Peptides</div>
+                <div class="card-subtitle">3.5 · DSIP · Selank · Semax</div>
+              </div>
+            </div>
+            <svg class="card-chevron" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+          </div>
+          <div class="card-body">
+            <div class="peptide-grid">
+              <div class="peptide-tile">
+                <div class="peptide-tile-header"><div><div class="peptide-cat">Sleep</div><div class="peptide-name">DSIP</div></div></div>
+                <div class="peptide-tile-body">
+                  <div class="peptide-field"><div class="peptide-field-label">Best-Fit Goals</div><div class="peptide-field-val">Sleep quality, stress down-regulation, sleep maintenance and restorative sleep. Particularly for chronic stress-related insomnia.</div></div>
+                  <div class="peptide-field"><div class="peptide-field-label">Mechanism</div><div class="peptide-field-val">Sleep-cycle signaling via stress hormone and sleep-promoting neurotransmitter modulation — improved sleep architecture</div></div>
+                  <div class="peptide-field"><div class="peptide-field-label">Dosing</div><div class="peptide-field-val">50–300 mcg SQ or IM, early evening to align with circadian rhythms</div></div>
+                  <div class="note-box" style="margin-top:0.75rem"><div class="note-label">Valère Emphasis</div><div class="note-text">Not a sedative — supports natural sleep cycles. Reinforce sleep hygiene and address environmental factors (light, temperature, EMF).</div></div>
+                </div>
+              </div>
+              <div class="peptide-tile">
+                <div class="peptide-tile-header"><div><div class="peptide-cat">Anxiolytic</div><div class="peptide-name">Selank</div></div></div>
+                <div class="peptide-tile-body">
+                  <div class="peptide-field"><div class="peptide-field-label">Best-Fit Goals</div><div class="peptide-field-val">Anxiety reduction, stress resilience enhancement, cognitive clarity under stress, mild mood support</div></div>
+                  <div class="peptide-field"><div class="peptide-field-label">Mechanism</div><div class="peptide-field-val">Neuropeptide stress modulation via tuftsin-related pathways — anxiolytic effects without sedation</div></div>
+                  <div class="peptide-field"><div class="peptide-field-label">Dosing</div><div class="peptide-field-val">250–500 mcg daily, SQ or intranasal</div></div>
+                  <div class="peptide-field"><div class="peptide-field-label">Tolerability</div><div class="peptide-field-val">Well tolerated. Some transient drowsiness during initial use; typically resolves within days.</div></div>
+                  <div class="note-box" style="margin-top:0.75rem"><div class="note-label">Valère Emphasis</div><div class="note-text">Not a replacement for psychotherapy or lifestyle stress management. Provides neurochemical support while patients work on cognitive/behavioral strategies. Effects are subtle and cumulative.</div></div>
+                </div>
+              </div>
+              <div class="peptide-tile">
+                <div class="peptide-tile-header"><div><div class="peptide-cat">Nootropic</div><div class="peptide-name">Semax</div></div></div>
+                <div class="peptide-tile-body">
+                  <div class="peptide-field"><div class="peptide-field-label">Best-Fit Goals</div><div class="peptide-field-val">Cognitive clarity, focus enhancement, mental stamina during demanding tasks, neuroprotection during stress or recovery</div></div>
+                  <div class="peptide-field"><div class="peptide-field-label">Mechanism</div><div class="peptide-field-val">Neurotrophic signaling via BDNF upregulation and monoamine modulation — supports neuroplasticity and cognitive performance</div></div>
+                  <div class="peptide-field"><div class="peptide-field-label">Dosing</div><div class="peptide-field-val">300–600 mcg daily, intranasal preferred for rapid CNS delivery</div></div>
+                  <div class="note-box" style="margin-top:0.75rem"><div class="note-label">Valère Emphasis</div><div class="note-text">Performance optimizer, not a stimulant. Effects most noticeable during cognitively demanding periods. Pair with adequate sleep, hydration, and nutrient density.</div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- IMMUNE + OTHER -->
+        <div id="s3-immune" class="protocol-card reveal">
+          <div class="card-header" onclick="toggleCard(this)">
+            <div class="card-title-group">
+              <div class="card-icon">⚔️</div>
+              <div>
+                <div class="card-title">Immune Support & Other Category Peptides</div>
+                <div class="card-subtitle">3.6 · Thymosin Alpha-1 · LL-37 · GHK-Cu · PT-141 · Oxytocin · MOTS-c · Epitalon</div>
+              </div>
+            </div>
+            <svg class="card-chevron" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+          </div>
+          <div class="card-body">
+            <div id="s3-other">
+            <div class="peptide-grid">
+              <div class="peptide-tile">
+                <div class="peptide-tile-header"><div><div class="peptide-cat">Immune</div><div class="peptide-name">Thymosin Alpha-1</div></div></div>
+                <div class="peptide-tile-body">
+                  <div class="peptide-field"><div class="peptide-field-label">Best-Fit Goals</div><div class="peptide-field-val">Immune modulation in chronic viral infections, adjunct during cancer treatment, autoimmune management (with caution), seasonal immune optimization</div></div>
+                  <div class="peptide-field"><div class="peptide-field-label">Dosing</div><div class="peptide-field-val">1.6–3.2 mg SQ weekly; twice weekly during acute immune challenges or chronic infection protocols</div></div>
+                  <div class="peptide-caution">⚠ Caution: active autoimmune flares — clinical judgment required</div>
+                  <div class="note-box" style="margin-top:0.75rem"><div class="note-label">Valère Emphasis</div><div class="note-text">Requires foundational support — sleep, stress management, nutrient sufficiency, and microbiome health are non-negotiable.</div></div>
+                </div>
+              </div>
+              <div class="peptide-tile">
+                <div class="peptide-tile-header"><div><div class="peptide-cat">Immune</div><div class="peptide-name">LL-37</div></div></div>
+                <div class="peptide-tile-body">
+                  <div class="peptide-field"><div class="peptide-field-label">Best-Fit Goals</div><div class="peptide-field-val">Antimicrobial support in chronic infections, biofilm disruption, advanced immune support in complex cases</div></div>
+                  <div class="peptide-field"><div class="peptide-field-label">Dosing</div><div class="peptide-field-val">50–100 mcg SQ daily in time-limited protocols (4–12 weeks)</div></div>
+                  <div class="peptide-field"><div class="peptide-field-label">Tolerability</div><div class="peptide-field-val">May cause transient immune activation symptoms (mild fever, fatigue). Typically resolve within 24–48 hours.</div></div>
+                  <div class="peptide-caution">⚠ Avoid: active autoimmune disease</div>
+                  <div class="note-box" style="margin-top:0.75rem"><div class="note-label">Valère Emphasis</div><div class="note-text">Reserved for advanced cases where conventional antimicrobials have failed. Close monitoring and clear stop-points required. Not for routine immune support.</div></div>
+                </div>
+              </div>
+              <div class="peptide-tile">
+                <div class="peptide-tile-header"><div><div class="peptide-cat">Aesthetic</div><div class="peptide-name">GHK-Cu</div></div></div>
+                <div class="peptide-tile-body">
+                  <div class="peptide-field"><div class="peptide-field-label">Best-Fit Goals</div><div class="peptide-field-val">Skin repair, collagen support, hair health, wound healing, anti-aging protocols</div></div>
+                  <div class="peptide-field"><div class="peptide-field-label">Mechanism</div><div class="peptide-field-val">Copper-mediated regenerative signaling — collagen synthesis, antioxidant activity, tissue remodeling</div></div>
+                  <div class="peptide-field"><div class="peptide-field-label">Typical Use</div><div class="peptide-field-val">Topical or injectable; formulation varies by target (facial, scalp, systemic)</div></div>
+                  <div class="note-box" style="margin-top:0.75rem"><div class="note-label">Valère Emphasis</div><div class="note-text">Results are cumulative — consistency and patience required. Combine with sun protection, retinoids, and hydration.</div></div>
+                </div>
+              </div>
+              <div class="peptide-tile">
+                <div class="peptide-tile-header"><div><div class="peptide-cat">Hormonal</div><div class="peptide-name">PT-141 (Bremelanotide)</div></div></div>
+                <div class="peptide-tile-body">
+                  <div class="peptide-field"><div class="peptide-field-label">Best-Fit Goals</div><div class="peptide-field-val">Libido enhancement, sexual function support — men and women</div></div>
+                  <div class="peptide-field"><div class="peptide-field-label">Mechanism</div><div class="peptide-field-val">Melanocortin receptor signaling affecting sexual arousal pathways</div></div>
+                  <div class="peptide-field"><div class="peptide-field-label">Dosing</div><div class="peptide-field-val">0.5–2 mg SQ PRN or scheduled 2–3x weekly</div></div>
+                  <div class="peptide-field"><div class="peptide-field-label">Tolerability</div><div class="peptide-field-val">Nausea, flushing, transient blood pressure changes</div></div>
+                  <div class="peptide-caution">⚠ Avoid: uncontrolled CVD, uncontrolled HTN</div>
+                  <div class="note-box" style="margin-top:0.75rem"><div class="note-label">Valère Emphasis</div><div class="note-text">Affects arousal pathways — not mechanical function. Counsel with realistic expectations.</div></div>
+                </div>
+              </div>
+              <div class="peptide-tile">
+                <div class="peptide-tile-header"><div><div class="peptide-cat">GH-Axis</div><div class="peptide-name">CJC-1295 / Ipamorelin / Sermorelin</div></div></div>
+                <div class="peptide-tile-body">
+                  <div class="peptide-field"><div class="peptide-field-label">Best-Fit Goals</div><div class="peptide-field-val">Recovery, sleep quality, body composition optimization through endogenous GH release</div></div>
+                  <div class="peptide-field"><div class="peptide-field-label">Dosing</div><div class="peptide-field-val">CJC-1295: 1–2 mg weekly. Ipamorelin/Sermorelin: 100–300 mcg daily.</div></div>
+                  <div class="peptide-caution">⚠ Avoid: pituitary tumors, active cancer, acromegaly history</div>
+                  <div class="note-box" style="margin-top:0.75rem"><div class="note-label">Valère Emphasis</div><div class="note-text">Baseline IGF-1 testing and periodic monitoring required for all GH-axis peptides.</div></div>
+                </div>
+              </div>
+              <div class="peptide-tile">
+                <div class="peptide-tile-header"><div><div class="peptide-cat">Longevity</div><div class="peptide-name">MOTS-c</div></div></div>
+                <div class="peptide-tile-body">
+                  <div class="peptide-field"><div class="peptide-field-label">Best-Fit Goals</div><div class="peptide-field-val">Metabolic flexibility, mitochondrial health optimization, exercise performance, insulin sensitivity improvement</div></div>
+                  <div class="peptide-field"><div class="peptide-field-label">Dosing</div><div class="peptide-field-val">5 mg SQ daily; often cycled (5 days on, 2 days off) to prevent tolerance</div></div>
+                  <div class="note-box" style="margin-top:0.75rem"><div class="note-label">Valère Emphasis</div><div class="note-text">Amplifies benefits of exercise and metabolic stress — not a substitute for movement. Enhances adaptation to training stimulus.</div></div>
+                </div>
+              </div>
+              <div class="peptide-tile">
+                <div class="peptide-tile-header"><div><div class="peptide-cat">Longevity</div><div class="peptide-name">Epitalon / Epithalon</div></div></div>
+                <div class="peptide-tile-body">
+                  <div class="peptide-field"><div class="peptide-field-label">Best-Fit Goals</div><div class="peptide-field-val">Longevity signaling, cellular aging modulation, circadian rhythm support, potential telomerase activation</div></div>
+                  <div class="peptide-field"><div class="peptide-field-label">Dosing</div><div class="peptide-field-val">Cycle-based: typically 10 mg total over 10–20 days, repeated 2–4x annually</div></div>
+                  <div class="peptide-caution">⚠ Avoid: active cancer (telomerase modulation)</div>
+                  <div class="note-box" style="margin-top:0.75rem"><div class="note-label">Valère Emphasis</div><div class="note-text">Evidence is emerging. Position as experimental longevity intervention — conservative expectations required.</div></div>
+                </div>
+              </div>
+            </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ─── SECTION 4: IV THERAPY ─── -->
+    <div class="section-block" id="s4">
+      <div class="section-header">
+        <div class="section-number">Section 04</div>
+        <h1><em>IV Therapy</em><br>Protocol</h1>
+        <p>Immediate-use preparation and administration framework for IV fluids with sterile additives — compliant with USP &lt;797&gt; Immediate-Use standards and Florida regulatory requirements.</p>
+      </div>
+      <div class="sticky-tab">
+        <span class="sticky-tab-name">§4 · IV Therapy Protocol</span>
+        <a class="sticky-tab-back" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑ Top</a>
+      </div>
+      <div class="content-area">
+
+        <div class="protocol-card reveal">
+          <div class="card-header" onclick="toggleCard(this)">
+            <div class="card-title-group">
+              <div class="card-icon">💉</div>
+              <div>
+                <div class="card-title">Immediate-Use IV Preparation Protocol</div>
+                <div class="card-subtitle">4.1 · Non-Compounding · Point-of-Care Preparation Only</div>
+              </div>
+            </div>
+            <svg class="card-chevron" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+          </div>
+          <div class="card-body">
+            <div class="protocol-section">
+              <div class="proto-label">This Protocol Applies To</div>
+              <ul class="proto-list">
+                <li>FDA-approved, commercially manufactured IV base solutions (Normal Saline, Lactated Ringer's)</li>
+                <li>FDA-approved, commercially manufactured sterile injectable additives</li>
+                <li>Preparation performed at the point of care</li>
+                <li>Infusions initiated without delay after preparation</li>
+              </ul>
+            </div>
+            <div class="protocol-section">
+              <div class="proto-label">This Protocol Does NOT Apply To</div>
+              <ul class="proto-list">
+                <li>Batch or advance preparation</li>
+                <li>Storage or refrigeration of prepared IV solutions</li>
+                <li>Assignment of beyond-use dates</li>
+                <li>Take-home injectable medications</li>
+                <li>Pharmacy-level sterile compounding or preparation for future use</li>
+              </ul>
+            </div>
+            <div class="protocol-section">
+              <div class="proto-label">Core Principles</div>
+              <ul class="proto-list">
+                <li>Valère does not compound sterile products for storage or future administration</li>
+                <li>All IV additives introduced solely as immediate-use sterile preparations</li>
+                <li>Preparation occurs only when patient is present and ready for infusion</li>
+                <li>Administration begins immediately following preparation</li>
+                <li>Aseptic technique and patient safety take precedence over operational convenience</li>
+              </ul>
+            </div>
+            <div class="protocol-section">
+              <div class="proto-label">Therapy Principles</div>
+              <ul class="proto-list">
+                <li>Each additive drawn using a new sterile syringe and needle</li>
+                <li>Vial stoppers and IV ports disinfected prior to access</li>
+                <li>Additives injected into IV base solution using aseptic technique</li>
+                <li>IV bags gently mixed per manufacturer guidance</li>
+                <li>Prepared solutions are not held, stored, or reused</li>
+                <li>Any unused or partially used solution discarded after infusion</li>
+              </ul>
+            </div>
+            <div class="note-box">
+              <div class="note-label">⚑ Difficult IV Access Protocol</div>
+              <div class="note-text">For difficult IV access: maximum 3 attempts per provider, maximum 1 provider making attempts before escalating. Document number of attempts and rationale in the medical record.</div>
+            </div>
+            <div class="note-box" style="margin-top:1rem">
+              <div class="note-label">⚑ Patient Lifestyle Counseling — IV Therapy</div>
+              <div class="note-text">Counsel all IV therapy patients on: (1) increase hydration in the days before and after infusion; (2) avoid alcohol prior to infusion (liver clearance); (3) limit high-fat meals around the time of IV administration to optimize absorption and minimize GI discomfort.</div>
+            </div>
+            <div class="protocol-section">
+              <div class="proto-label">Documentation Requirements</div>
+              <ul class="proto-list">
+                <li>IV base solution used</li>
+                <li>Sterile additives and dosages administered</li>
+                <li>Verification of expiration and integrity</li>
+                <li>Time of preparation and infusion initiation</li>
+                <li>Name and credentials of preparer/administrator</li>
+                <li>Patient tolerance and completion of therapy</li>
+              </ul>
+            </div>
+            <div class="warn-box">
+              <div class="note-label">Escalation Required If</div>
+              <div class="note-text">Patient not present or ready for infusion · Supplies show compromised integrity or expiration · Intent to store or delay administration · Any deviation from immediate-use standards → escalate to clinical leadership immediately.</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ─── SECTION 5: PATIENT EDUCATION ─── -->
+    <div class="section-block" id="s5">
+      <div class="section-header">
+        <div class="section-number">Section 05</div>
+        <h1>Patient <em>Education</em><br>— Peptides 101</h1>
+        <p>Plain-language education for patients beginning or considering peptide therapy at Valère.</p>
+      </div>
+      <div class="sticky-tab">
+        <span class="sticky-tab-name">§5 · Patient Education — Peptides 101</span>
+        <a class="sticky-tab-back" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑ Top</a>
+      </div>
+      <div class="content-area">
+
+        <div class="edu-hero reveal">
+          <div class="edu-icon">🧬</div>
+          <h2>What Are Peptides?</h2>
+          <p>Peptides are natural messengers made from amino acids — the same building blocks as protein. Think of them as the body's internal communication system, sending signals that keep everything running smoothly.</p>
+          <div class="pill-grid">
+            <div class="pill">Regulate metabolism & appetite</div>
+            <div class="pill">Control hormones</div>
+            <div class="pill">Repair tissue</div>
+            <div class="pill">Manage inflammation</div>
+            <div class="pill">Support sleep & brain function</div>
+          </div>
+        </div>
+
+        <div class="protocol-card reveal">
+          <div class="card-header" onclick="toggleCard(this)">
+            <div class="card-title-group">
+              <div class="card-icon">💡</div>
+              <div>
+                <div class="card-title">Why Valère Uses Peptides</div>
+                <div class="card-subtitle">The precision medicine approach to peptide therapy</div>
+              </div>
+            </div>
+            <svg class="card-chevron" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+          </div>
+          <div class="card-body">
+            <div class="proto-text" style="margin-bottom:1.5rem">Peptides don't override your body — they <strong>support it.</strong> At Valère, we believe in working with your body's natural intelligence rather than against it. Our approach to peptide therapy is rooted in precision medicine: understanding exactly what your body needs and providing targeted support to help restore optimal function.</div>
+            <div class="three-col">
+              <div class="info-block">
+                <div class="info-label">Improve Communication</div>
+                <div class="info-val">Enhance how systems signal throughout your body for better coordination of every physiologic process</div>
+              </div>
+              <div class="info-block">
+                <div class="info-label">Support Healing</div>
+                <div class="info-val">Accelerate recovery and tissue repair processes when the body's natural signaling has slowed</div>
+              </div>
+              <div class="info-block">
+                <div class="info-label">Enhance Balance & Longevity</div>
+                <div class="info-val">Optimize metabolic and hormonal function; support healthy aging at the cellular level</div>
+              </div>
+            </div>
+            <div class="note-box" style="margin-top:1.5rem">
+              <div class="note-label">The Valère Standard</div>
+              <div class="note-text">Peptides are not shortcuts. They are precision tools used to help your body function the way it was designed to. They work best when combined with proper nutrition, regular movement, quality sleep, and effective stress regulation — not as replacements for these foundations.</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ─── SECTION 6: LAB RANGES ─── -->
+    <div class="section-block" id="s6">
+      <div class="section-header">
+        <div class="section-number">Section 06</div>
+        <h1><em>Lab Ranges</em> &<br>Interpretation</h1>
+        <p>Valère functional goal ranges side-by-side with conventional reference ranges — with clinical interpretation notes for each marker. Pull this at every visit.</p>
+      </div>
+      <div class="sticky-tab">
+        <span class="sticky-tab-name">§6 · Lab Ranges & Interpretation</span>
+        <a class="sticky-tab-back" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑ Top</a>
+      </div>
+      <div class="content-area">
+
+        <div class="note-box" style="margin-bottom:1.5rem">
+          <div class="note-label">How to Use This Section</div>
+          <div class="note-text">Conventional ranges reflect statistical population norms — they are not optimal targets. Valère functional goal ranges represent where patients tend to feel well and perform optimally. Always interpret labs in the context of symptoms, clinical history, and trend over time — never in isolation.</div>
+        </div>
+
+        <!-- THYROID -->
+        <div id="s6-thyroid" class="protocol-card reveal">
+          <div class="card-header" onclick="toggleCard(this)">
+            <div class="card-title-group">
+              <div class="card-icon">🦋</div>
+              <div>
+                <div class="card-title">Thyroid Panel</div>
+                <div class="card-subtitle">TSH · Free T3 · Free T4 · Reverse T3 · TPO Ab · TgAb</div>
+              </div>
+            </div>
+            <svg class="card-chevron" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+          </div>
+          <div class="card-body">
+            <table class="proto-table">
+              <thead><tr><th>Marker</th><th>Conventional Range</th><th>Valère Functional Goal</th><th>Clinical Interpretation Notes</th></tr></thead>
+              <tbody>
+                <tr>
+                  <td><strong>TSH</strong></td>
+                  <td>0.45 – 4.5 mIU/L</td>
+                  <td><strong>0.5 – 1.5 mIU/L</strong></td>
+                  <td>TSH above 2.0 with symptoms warrants clinical attention even if "normal." Above 3.0 = subclinical hypothyroid territory functionally. Trending up over time is more meaningful than a single value.</td>
+                </tr>
+                <tr>
+                  <td><strong>Free T3</strong></td>
+                  <td>2.0 – 4.4 pg/mL</td>
+                  <td><strong>4.0 – 4.4 pg/mL</strong></td>
+                  <td>Free T3 is the active hormone. Low-normal Free T3 (2.0–3.2) with symptoms = conversion problem, not a production problem. Consider RT3 ratio. Symptoms drive treatment, not labs alone.</td>
+                </tr>
+                <tr>
+                  <td><strong>Free T4</strong></td>
+                  <td>0.82 – 1.77 ng/dL</td>
+                  <td><strong>1.1 – 1.5 ng/dL</strong></td>
+                  <td>T4 is a prohormone. Adequate T4 with low Free T3 = poor conversion (stress, inflammation, selenium deficiency, low-calorie diet). Check RT3 when this pattern is present.</td>
+                </tr>
+                <tr>
+                  <td><strong>Reverse T3</strong></td>
+                  <td>9.2 – 24.1 ng/dL</td>
+                  <td><strong>&lt; 12 ng/dL</strong></td>
+                  <td>Elevated RT3 blocks receptor sites and causes functional hypothyroid even with normal TSH/T4. Major drivers: chronic stress, caloric restriction, inflammation, high cortisol, iron deficiency. Calculate FT3:RT3 ratio — goal &gt;20.</td>
+                </tr>
+                <tr>
+                  <td><strong>TPO Antibodies</strong></td>
+                  <td>&lt; 34 IU/mL</td>
+                  <td><strong>&lt; 10 IU/mL</strong></td>
+                  <td>Elevated TPO Ab = Hashimoto's until proven otherwise. Even mildly elevated (&gt;10) warrants gluten-free trial and gut/immune investigation. Trend over time — declining Ab = responding to protocol.</td>
+                </tr>
+                <tr>
+                  <td><strong>Thyroglobulin Ab (TgAb)</strong></td>
+                  <td>&lt; 4 IU/mL</td>
+                  <td><strong>&lt; 2 IU/mL</strong></td>
+                  <td>Often elevated before TPO Ab. Can falsely lower thyroglobulin readings if monitoring thyroid cancer. Flag when elevated and trending up. May indicate early autoimmune process even with normal TPO Ab.</td>
+                </tr>
+              </tbody>
+            </table>
+            <div class="warn-box" style="margin-top:1.25rem">
+              <div class="note-label">Pattern Alert — Subclinical Hypothyroid</div>
+              <div class="note-text">TSH 2.0–4.5 + low-normal Free T3 + symptoms (fatigue, cold intolerance, hair loss, constipation, brain fog, weight resistance) = treat the patient, not the lab. Document symptom burden and clinical rationale in every note.</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- SEX HORMONES -->
+        <div id="s6-hormones" class="protocol-card reveal">
+          <div class="card-header" onclick="toggleCard(this)">
+            <div class="card-title-group">
+              <div class="card-icon">⚡</div>
+              <div>
+                <div class="card-title">Sex Hormones</div>
+                <div class="card-subtitle">Testosterone · Estradiol · Progesterone · SHBG · DHEA-S · LH · FSH</div>
+              </div>
+            </div>
+            <svg class="card-chevron" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+          </div>
+          <div class="card-body">
+            <div class="protocol-section">
+              <div class="proto-label">Male Hormone Panel</div>
+              <table class="proto-table">
+                <thead><tr><th>Marker</th><th>Conventional Range</th><th>Valère Functional Goal</th><th>Clinical Notes</th></tr></thead>
+                <tbody>
+                  <tr>
+                    <td><strong>Total Testosterone</strong></td>
+                    <td>264 – 916 ng/dL</td>
+                    <td><strong>900 – 1300 ng/dL</strong></td>
+                    <td>Conventional "normal" includes men who feel terrible. Optimization target for symptom resolution and tissue support. Draw AM fasting. Two measurements before diagnosing deficiency.</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Free Testosterone</strong></td>
+                    <td>5 – 21 ng/dL</td>
+                    <td><strong>150 – 250 pg/mL</strong></td>
+                    <td>The biologically active fraction. High SHBG can normalize total T while free T is deficient. This is the most clinically relevant number for symptom correlation.</td>
+                  </tr>
+                  <tr>
+                    <td><strong>SHBG</strong></td>
+                    <td>10 – 57 nmol/L</td>
+                    <td><strong>20 – 40 nmol/L</strong></td>
+                    <td>High SHBG binds testosterone, lowering free fraction. Elevated by: liver dysfunction, hyperthyroidism, estrogen, aging. Lowered by: insulin resistance, obesity, hypothyroidism, androgens.</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Estradiol (E2) — Male</strong></td>
+                    <td>10 – 40 pg/mL</td>
+                    <td><strong>20 – 35 pg/mL</strong></td>
+                    <td>Essential for bone health, libido, and cognition in men — do not suppress below 20. Above 40 on TRT = assess aromatization. Consider anastrozole only if symptomatic AND above 50.</td>
+                  </tr>
+                  <tr>
+                    <td><strong>PSA</strong></td>
+                    <td>&lt; 4.0 ng/mL</td>
+                    <td><strong>&lt; 2.5 ng/mL (&lt;1.5 if &lt;50yo)</strong></td>
+                    <td>Trending matters more than a single value. Rise &gt;0.75 ng/mL/year or &gt;0.5 ng/mL in 6 months = urology referral. Establish baseline before TRT initiation.</td>
+                  </tr>
+                  <tr>
+                    <td><strong>LH / FSH</strong></td>
+                    <td>1.5 – 9.3 / 1.6 – 8.0 mIU/mL</td>
+                    <td><strong>Context-dependent</strong></td>
+                    <td>Low LH + low T = central (secondary) hypogonadism → pituitary workup. High LH + low T = primary hypogonadism → testicular cause. Both suppressed on exogenous TRT = expected.</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="protocol-section" style="margin-top:1.5rem">
+              <div class="proto-label">Female Hormone Panel</div>
+              <table class="proto-table">
+                <thead><tr><th>Marker</th><th>Conventional Range</th><th>Valère Functional Goal</th><th>Clinical Notes</th></tr></thead>
+                <tbody>
+                  <tr>
+                    <td><strong>Total Testosterone (F)</strong></td>
+                    <td>15 – 70 ng/dL</td>
+                    <td><strong>150 – 250 ng/dL (on therapy)</strong></td>
+                    <td>Conventional female range based on no-therapy baseline. On optimization therapy, higher levels support libido, energy, muscle, and cognition. Titrate to symptom response.</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Free Testosterone (F)</strong></td>
+                    <td>1 – 8.5 pg/mL</td>
+                    <td><strong>10 – 15 pg/mL (on therapy)</strong></td>
+                    <td>Most clinically relevant female androgen marker. Low free T with symptoms = androgen insufficiency. High SHBG (common with oral estradiol or hypothyroidism) suppresses free fraction.</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Estradiol (E2) — Female</strong></td>
+                    <td>Varies by cycle phase</td>
+                    <td><strong>50–150 pg/mL (premenopause) / 80–200 pg/mL (on HRT)</strong></td>
+                    <td>Symptom-driven interpretation. Vasomotor symptoms with E2 below 50 = undertreated. Above 300 on therapy = assess route and dose. Cycling patients: check on day 19–21 for luteal assessment.</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Progesterone (F)</strong></td>
+                    <td>&lt; 1 ng/mL (follicular) / 5–20 ng/mL (luteal)</td>
+                    <td><strong>8–20 ng/mL (luteal phase goal)</strong></td>
+                    <td>Labs often not required for continuation when clinical benefit is evident. Luteal phase draw (day 19–22) most meaningful for cycling patients. Postmenopausal: check compliance and tolerability.</td>
+                  </tr>
+                  <tr>
+                    <td><strong>DHEA-S</strong></td>
+                    <td>35 – 430 mcg/dL (F) / 80 – 560 mcg/dL (M)</td>
+                    <td><strong>150 – 350 mcg/dL (F) / 300 – 450 mcg/dL (M)</strong></td>
+                    <td>Adrenal androgen — declines 1–2% per year after age 25. Low DHEA-S + fatigue + low T = adrenal insufficiency pattern. Supplement with caution in hormone-sensitive conditions.</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- METABOLIC -->
+        <div id="s6-metabolic" class="protocol-card reveal">
+          <div class="card-header" onclick="toggleCard(this)">
+            <div class="card-title-group">
+              <div class="card-icon">📊</div>
+              <div>
+                <div class="card-title">Metabolic & Cardiometabolic Panel</div>
+                <div class="card-subtitle">Glucose · Insulin · HbA1c · Lipids · hsCRP · Homocysteine · Uric Acid</div>
+              </div>
+            </div>
+            <svg class="card-chevron" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+          </div>
+          <div class="card-body">
+            <table class="proto-table">
+              <thead><tr><th>Marker</th><th>Conventional Range</th><th>Valère Functional Goal</th><th>Clinical Notes</th></tr></thead>
+              <tbody>
+                <tr>
+                  <td><strong>Fasting Glucose</strong></td>
+                  <td>70 – 99 mg/dL</td>
+                  <td><strong>70 – 85 mg/dL</strong></td>
+                  <td>85–99 = early insulin resistance pattern even if "normal." Pair with fasting insulin for full picture. Trending up year over year = intervene early.</td>
+                </tr>
+                <tr>
+                  <td><strong>Fasting Insulin</strong></td>
+                  <td>&lt; 25 mcIU/mL</td>
+                  <td><strong>&lt; 5 mcIU/mL</strong></td>
+                  <td>Most underordered marker in functional medicine. Insulin rises years before glucose — this is the early warning system. Above 10 = early IR. Above 15 = significant IR. Calculate HOMA-IR (glucose × insulin ÷ 405).</td>
+                </tr>
+                <tr>
+                  <td><strong>HbA1c</strong></td>
+                  <td>&lt; 5.7%</td>
+                  <td><strong>4.8 – 5.3%</strong></td>
+                  <td>5.4–5.6 = early dysglycemia to address aggressively. Above 5.7 = prediabetes. Affected by hemoglobin variants, recent blood loss, or hemolysis — pair with fasting glucose and insulin for accuracy.</td>
+                </tr>
+                <tr>
+                  <td><strong>Total Cholesterol</strong></td>
+                  <td>&lt; 200 mg/dL</td>
+                  <td><strong>160 – 220 mg/dL</strong></td>
+                  <td>Total cholesterol alone is a poor cardiovascular predictor. Low cholesterol (&lt;160) = increased risk of hemorrhagic stroke, depression, hormonal insufficiency (cholesterol is a steroid hormone precursor).</td>
+                </tr>
+                <tr>
+                  <td><strong>LDL-C</strong></td>
+                  <td>&lt; 100 mg/dL</td>
+                  <td><strong>Context-dependent</strong></td>
+                  <td>LDL particle size matters more than total LDL. Large fluffy LDL = low risk. Small dense LDL = high risk. Order LDL-P or NMR if available. LDL alone without particle size is insufficient for risk stratification.</td>
+                </tr>
+                <tr>
+                  <td><strong>HDL-C</strong></td>
+                  <td>&gt; 40 mg/dL (M) / &gt; 50 mg/dL (F)</td>
+                  <td><strong>&gt; 60 mg/dL (M) / &gt; 70 mg/dL (F)</strong></td>
+                  <td>Higher is generally better. Low HDL + high triglycerides = insulin resistance pattern. Exercise is the most effective HDL raiser. Niacin, alcohol reduction, omega-3s all support HDL.</td>
+                </tr>
+                <tr>
+                  <td><strong>Triglycerides</strong></td>
+                  <td>&lt; 150 mg/dL</td>
+                  <td><strong>&lt; 80 mg/dL</strong></td>
+                  <td>Most sensitive insulin resistance marker in the lipid panel. Above 100 warrants carb/sugar investigation. Above 150 = significant IR. TG:HDL ratio &lt; 2.0 is the functional target.</td>
+                </tr>
+                <tr>
+                  <td><strong>hsCRP</strong></td>
+                  <td>&lt; 3.0 mg/L</td>
+                  <td><strong>&lt; 1.0 mg/L</strong></td>
+                  <td>Systemic inflammation marker. 1–3 = moderate CV risk. Above 3 = high risk (rule out acute infection first). Primary drivers: insulin resistance, dysbiosis, food sensitivities, poor sleep, chronic stress.</td>
+                </tr>
+                <tr>
+                  <td><strong>Homocysteine</strong></td>
+                  <td>&lt; 15 mcmol/L</td>
+                  <td><strong>&lt; 7 mcmol/L</strong></td>
+                  <td>Above 9 = early methylation dysfunction. Above 12 = elevated CV and cognitive risk. Check MTHFR. Treat with methylfolate, methylcobalamin, B6, and betaine — not standard folic acid.</td>
+                </tr>
+                <tr>
+                  <td><strong>Uric Acid</strong></td>
+                  <td>3.4 – 7.0 mg/dL (M) / 2.4 – 6.0 mg/dL (F)</td>
+                  <td><strong>&lt; 5.5 mg/dL</strong></td>
+                  <td>Rising uric acid = early metabolic dysfunction signal even below gout threshold. Correlates with insulin resistance, fructose overconsumption, and hypertension risk. Underappreciated cardiometabolic marker.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- NUTRIENTS -->
+        <div id="s6-nutrients" class="protocol-card reveal">
+          <div class="card-header" onclick="toggleCard(this)">
+            <div class="card-title-group">
+              <div class="card-icon">🌿</div>
+              <div>
+                <div class="card-title">Nutrients & Inflammation Markers</div>
+                <div class="card-subtitle">Vitamin D · B12 · Ferritin · Iron · Magnesium · Zinc · Omega-3 Index</div>
+              </div>
+            </div>
+            <svg class="card-chevron" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+          </div>
+          <div class="card-body">
+            <table class="proto-table">
+              <thead><tr><th>Marker</th><th>Conventional Range</th><th>Valère Functional Goal</th><th>Clinical Notes</th></tr></thead>
+              <tbody>
+                <tr>
+                  <td><strong>Vitamin D (25-OH)</strong></td>
+                  <td>30 – 100 ng/mL</td>
+                  <td><strong>70 – 100 ng/mL</strong></td>
+                  <td>Most patients are insufficient even at 40–50 ng/mL. Below 40 = impaired immune function, mood, hormone production. Supplement with D3 + K2. Recheck in 90 days. Toxicity rare below 150 ng/mL.</td>
+                </tr>
+                <tr>
+                  <td><strong>Vitamin B12</strong></td>
+                  <td>200 – 900 pg/mL</td>
+                  <td><strong>700 – 900 pg/mL</strong></td>
+                  <td>Serum B12 may not reflect intracellular status. Below 400 = functional deficiency risk even if "normal." Pair with methylmalonic acid for accuracy. Metformin, PPIs, and vegan diets = major depletion drivers.</td>
+                </tr>
+                <tr>
+                  <td><strong>Ferritin</strong></td>
+                  <td>12 – 300 ng/mL (M) / 12 – 150 ng/mL (F)</td>
+                  <td><strong>50 – 100 ng/mL</strong></td>
+                  <td>Below 30 = depleted stores affecting thyroid conversion, energy, hair, and cognition even without anemia. Above 150 = inflammation or iron overload — check transferrin saturation. Do not supplement iron without confirmed deficiency.</td>
+                </tr>
+                <tr>
+                  <td><strong>Serum Iron / TIBC</strong></td>
+                  <td>60 – 170 mcg/dL / 250 – 370 mcg/dL</td>
+                  <td><strong>Transferrin sat 25–35%</strong></td>
+                  <td>Transferrin saturation below 20% = functional iron deficiency even with normal serum iron. Above 45% = hemochromatosis screening. Always interpret iron, TIBC, and ferritin together.</td>
+                </tr>
+                <tr>
+                  <td><strong>Magnesium (RBC)</strong></td>
+                  <td>4.2 – 6.8 mg/dL</td>
+                  <td><strong>5.5 – 6.8 mg/dL</strong></td>
+                  <td>Serum magnesium is a poor indicator — order RBC magnesium. Below 5.5 = deficiency despite "normal" serum level. Essential for 300+ enzymatic reactions, sleep, glucose regulation, and muscle function.</td>
+                </tr>
+                <tr>
+                  <td><strong>Zinc (plasma)</strong></td>
+                  <td>60 – 120 mcg/dL</td>
+                  <td><strong>90 – 120 mcg/dL</strong></td>
+                  <td>Zinc is essential for immune function, testosterone synthesis, and thyroid hormone conversion. Low zinc = impaired T4→T3 conversion. Always balance with copper (8:1 zinc:copper ratio).</td>
+                </tr>
+                <tr>
+                  <td><strong>Omega-3 Index</strong></td>
+                  <td>&gt; 4%</td>
+                  <td><strong>8 – 12%</strong></td>
+                  <td>The most clinically useful omega-3 measurement. Below 8% = elevated CV and inflammatory risk. Target 8% minimum; 10–12% for inflammatory conditions. Requires 2–4g EPA+DHA daily in most deficient patients.</td>
+                </tr>
+                <tr>
+                  <td><strong>Folate (RBC)</strong></td>
+                  <td>&gt; 280 ng/mL</td>
+                  <td><strong>&gt; 400 ng/mL</strong></td>
+                  <td>RBC folate reflects tissue stores more accurately than serum. Low RBC folate + elevated homocysteine = methylation dysfunction. Use methylfolate (5-MTHF), not folic acid, in MTHFR-positive patients.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- ADRENAL -->
+        <div id="s6-adrenal" class="protocol-card reveal">
+          <div class="card-header" onclick="toggleCard(this)">
+            <div class="card-title-group">
+              <div class="card-icon">🔋</div>
+              <div>
+                <div class="card-title">Adrenal & Stress Markers</div>
+                <div class="card-subtitle">Cortisol · DHEA-S · Pregnenolone · 4-Point Salivary Cortisol</div>
+              </div>
+            </div>
+            <svg class="card-chevron" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+          </div>
+          <div class="card-body">
+            <table class="proto-table">
+              <thead><tr><th>Marker</th><th>Conventional Range</th><th>Valère Functional Goal</th><th>Clinical Notes</th></tr></thead>
+              <tbody>
+                <tr>
+                  <td><strong>AM Cortisol (serum)</strong></td>
+                  <td>6 – 23 mcg/dL</td>
+                  <td><strong>14 – 20 mcg/dL (AM)</strong></td>
+                  <td>Draw between 7–9 AM. Below 10 with symptoms = adrenal insufficiency workup (ACTH stim test). Above 20 with chronic stress = hypercortisol pattern. Confounded by acute stress of phlebotomy.</td>
+                </tr>
+                <tr>
+                  <td><strong>DHEA-S</strong></td>
+                  <td>See Sex Hormones section</td>
+                  <td><strong>150–350 (F) / 300–450 (M) mcg/dL</strong></td>
+                  <td>Counter-regulatory to cortisol. Low DHEA-S + high cortisol = HPA dysregulation. Low DHEA-S + low cortisol = adrenal fatigue pattern. Supplement with caution in hormone-sensitive conditions.</td>
+                </tr>
+                <tr>
+                  <td><strong>Pregnenolone</strong></td>
+                  <td>10 – 230 ng/dL</td>
+                  <td><strong>100 – 180 ng/dL</strong></td>
+                  <td>"Mother hormone" precursor to all steroid hormones. Steals from pregnenolone during chronic stress = low progesterone, DHEA, testosterone pattern. Consider supplementation when depleted.</td>
+                </tr>
+                <tr>
+                  <td><strong>4-Point Salivary Cortisol</strong></td>
+                  <td>AM peak declining to low PM</td>
+                  <td><strong>AM high → noon moderate → PM low → night very low</strong></td>
+                  <td>Gold standard for HPA axis pattern assessment. Most patients with fatigue and sleep dysregulation have an inverted or blunted curve. Serum cortisol misses the diurnal pattern entirely. Order DUTCH or salivary cortisol panel.</td>
+                </tr>
+              </tbody>
+            </table>
+            <div class="note-box" style="margin-top:1.25rem">
+              <div class="note-label">HPA Pattern Recognition</div>
+              <div class="note-text">Stage 1 (High AM cortisol, wired-tired, poor sleep onset) → Stage 2 (Variable cortisol, energy crashes, poor stress tolerance) → Stage 3 (Flat cortisol curve, exhaustion, salt cravings, poor recovery). Each stage requires a different intervention approach — adapt to pattern, not a one-size protocol.</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- HEMATOLOGIC -->
+        <div id="s6-hematologic" class="protocol-card reveal">
+          <div class="card-header" onclick="toggleCard(this)">
+            <div class="card-title-group">
+              <div class="card-icon">🩸</div>
+              <div>
+                <div class="card-title">Hematologic Panel</div>
+                <div class="card-subtitle">CBC · Hematocrit · Hemoglobin · WBC Differential · Platelets</div>
+              </div>
+            </div>
+            <svg class="card-chevron" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+          </div>
+          <div class="card-body">
+            <table class="proto-table">
+              <thead><tr><th>Marker</th><th>Conventional Range</th><th>Valère Functional Goal / Action Threshold</th><th>Clinical Notes</th></tr></thead>
+              <tbody>
+                <tr>
+                  <td><strong>Hematocrit</strong></td>
+                  <td>38.3–50.0% (M) / 35.5–44.9% (F)</td>
+                  <td><strong>Action: &gt;54% (M) / &gt;50% (F) on TRT</strong></td>
+                  <td>Monitor every 3–6 months on TRT. Above threshold = implement polycythemia protocol (see §2.5). Assess symptoms (headache, flushing, dizziness). Confirm hydration status before acting on mildly elevated values.</td>
+                </tr>
+                <tr>
+                  <td><strong>Hemoglobin</strong></td>
+                  <td>13.5–17.5 g/dL (M) / 12–16 g/dL (F)</td>
+                  <td><strong>Trend matters — rising trend on TRT = intervention</strong></td>
+                  <td>Trending up more than 2 g/dL from baseline on TRT warrants dose assessment even if not above threshold. Dehydration can falsely elevate.</td>
+                </tr>
+                <tr>
+                  <td><strong>WBC</strong></td>
+                  <td>4.5 – 11.0 × 10³/µL</td>
+                  <td><strong>5.0 – 7.5 × 10³/µL</strong></td>
+                  <td>Persistently low WBC (&lt;4.5) = immune suppression, viral infection, nutritional deficiency. High WBC with no acute illness = chronic low-grade inflammation. Differential more informative than total count.</td>
+                </tr>
+                <tr>
+                  <td><strong>Neutrophil:Lymphocyte Ratio</strong></td>
+                  <td>&lt; 3.0</td>
+                  <td><strong>&lt; 2.0</strong></td>
+                  <td>Emerging cardiometabolic and immune health marker. Elevated NLR (&gt;3) = chronic stress/inflammation, insulin resistance, elevated CV risk. Calculated from CBC differential.</td>
+                </tr>
+                <tr>
+                  <td><strong>Platelets</strong></td>
+                  <td>150 – 400 × 10³/µL</td>
+                  <td><strong>150 – 300 × 10³/µL</strong></td>
+                  <td>Low platelets + elevated hematocrit on TRT = hematology referral. Thrombocytosis above 400 warrants investigation. Trending below 150 = flag before any procedural intervention (pellet insertion, phlebotomy).</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ─── SECTION 7: SUPPLEMENTS ─── -->
+    <div class="section-block" id="s7">
+      <div class="section-header">
+        <div class="section-number">Section 07</div>
+        <h1><em>Supplement</em> &<br>Nutraceutical Reference</h1>
+        <p>Vetted Fullscript-aligned supplement stacks by clinical category — form, dose, indication, and interaction flags. Organized for clinical use, not consumer browsing.</p>
+      </div>
+      <div class="sticky-tab">
+        <span class="sticky-tab-name">§7 · Supplement & Nutraceutical Reference</span>
+        <a class="sticky-tab-back" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑ Top</a>
+      </div>
+      <div class="content-area">
+
+        <div class="note-box" style="margin-bottom:1.5rem">
+          <div class="note-label">Fullscript Protocol Note</div>
+          <div class="note-text">All supplements below represent vetted forms and doses aligned with Valère's Fullscript dispensary. Form matters — avoid oxide, carbonate, and cyanocobalamin forms. Dosing ranges represent clinical starting points; individualize based on labs, symptoms, and patient response. Always run interaction check against patient's full medication list before ordering.</div>
+        </div>
+
+        <!-- THYROID SUPPORT -->
+        <div id="s7-thyroid" class="protocol-card reveal">
+          <div class="card-header" onclick="toggleCard(this)">
+            <div class="card-title-group">
+              <div class="card-icon">🦋</div>
+              <div>
+                <div class="card-title">Thyroid Support Stack</div>
+                <div class="card-subtitle">Conversion support · Antibody modulation · Cofactor repletion</div>
+              </div>
+            </div>
+            <svg class="card-chevron" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+          </div>
+          <div class="card-body">
+            <table class="proto-table">
+              <thead><tr><th>Supplement</th><th>Form / Dose</th><th>Indication</th><th>Key Interactions / Flags</th></tr></thead>
+              <tbody>
+                <tr><td><strong>Selenium</strong></td><td>Selenomethionine · 200 mcg/day</td><td>T4→T3 conversion; TPO Ab reduction; antioxidant protection of thyroid gland</td><td>Do not exceed 400 mcg/day (toxicity risk). Reduce dose if Brazil nuts consumed regularly. Separate from thyroid medication by 4 hours.</td></tr>
+                <tr><td><strong>Zinc</strong></td><td>Zinc bisglycinate · 25–50 mg/day</td><td>T4→T3 conversion; TPO Ab modulation; immune regulation</td><td>Balance with copper (1–2 mg copper per 25 mg zinc). Separate from thyroid medication by 4 hours. Take with food to reduce nausea.</td></tr>
+                <tr><td><strong>Iodine (low-dose)</strong></td><td>Potassium iodide · 150–300 mcg/day</td><td>Cofactor for thyroid hormone synthesis; deficiency correction only</td><td>Do NOT supplement high-dose iodine in Hashimoto's — can worsen autoimmunity. Confirm deficiency before supplementing. Avoid in hyperthyroidism.</td></tr>
+                <tr><td><strong>Vitamin D3 + K2</strong></td><td>D3 5000 IU + K2 (MK-7) 100 mcg/day</td><td>Immune modulation; TPO Ab reduction; thyroid receptor support</td><td>Monitor 25-OH Vitamin D — target 70–100 ng/mL. K2 essential to direct calcium to bones, not arteries. Check baseline before supplementing.</td></tr>
+                <tr><td><strong>Ashwagandha</strong></td><td>KSM-66 extract · 300–600 mg/day</td><td>HPA support; cortisol reduction; T4 and T3 support in subclinical hypothyroid</td><td>Avoid in Graves' disease (hyperthyroid). May interact with thyroid medications — recheck labs 6–8 weeks after starting. Avoid in pregnancy.</td></tr>
+                <tr><td><strong>Magnesium Glycinate</strong></td><td>Magnesium glycinate · 200–400 mg/night</td><td>Cofactor for thyroid hormone production; sleep regulation; insulin sensitization</td><td>Separate from thyroid medication by 4 hours. Loose stools if dose too high — reduce and titrate. Most patients benefit from PM dosing for sleep.</td></tr>
+                <tr><td><strong>B-Complex (methylated)</strong></td><td>Methylfolate + methylcobalamin based · 1 cap/day</td><td>Methylation support; conversion support; energy metabolism</td><td>Use methylated forms — avoid folic acid in MTHFR-positive patients. B12 as methylcobalamin or adenosylcobalamin, not cyanocobalamin. May cause vivid dreams initially.</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- HORMONE BALANCE -->
+        <div id="s7-hormones" class="protocol-card reveal">
+          <div class="card-header" onclick="toggleCard(this)">
+            <div class="card-title-group">
+              <div class="card-icon">⚡</div>
+              <div>
+                <div class="card-title">Hormone Balance & Optimization Stack</div>
+                <div class="card-subtitle">Estrogen metabolism · Testosterone support · Progesterone cofactors · SHBG modulation</div>
+              </div>
+            </div>
+            <svg class="card-chevron" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+          </div>
+          <div class="card-body">
+            <table class="proto-table">
+              <thead><tr><th>Supplement</th><th>Form / Dose</th><th>Indication</th><th>Key Interactions / Flags</th></tr></thead>
+              <tbody>
+                <tr><td><strong>DIM (Diindolylmethane)</strong></td><td>200–400 mg/day with food</td><td>Estrogen metabolism toward 2-OH pathway; reduces estrogen dominance; improves E2:E1 ratio</td><td>Can lower estrogen significantly — use caution in women already on low-dose HRT. Not appropriate in estrogen-deficient patients. May cause dark urine (harmless).</td></tr>
+                <tr><td><strong>Calcium D-Glucarate</strong></td><td>500–1000 mg/day</td><td>Phase 2 liver estrogen detox; reduces beta-glucuronidase; supports estrogen clearance</td><td>Synergistic with DIM for estrogen clearance protocol. Avoid in patients on oral medications requiring beta-glucuronidase for absorption. Generally well tolerated.</td></tr>
+                <tr><td><strong>Vitex (Chaste Tree)</strong></td><td>200–400 mg standardized extract/day AM</td><td>Progesterone support; LH regulation; PMS and luteal phase support; perimenopause</td><td>Do NOT combine with dopamine antagonist medications. Avoid in pregnancy and with hormonal contraception. Takes 3–6 months for full effect. Not appropriate with dopamine medications.</td></tr>
+                <tr><td><strong>Maca (gelatinized)</strong></td><td>1500–3000 mg/day</td><td>HPA-HPG axis support; libido; mood; menopausal symptom support; androgen support in men</td><td>Gelatinized form preferred for digestibility. Generally well tolerated. Avoid in hormone-sensitive cancers — not a phytoestrogen but use clinical judgment. May take 4–6 weeks for effect.</td></tr>
+                <tr><td><strong>Zinc Bisglycinate</strong></td><td>25–50 mg/day</td><td>Testosterone synthesis; 5-alpha reductase modulation; aromatase reduction</td><td>Balance with copper. Take with food. High-dose zinc long-term can cause copper deficiency — supplement copper if using &gt;40 mg zinc for &gt;3 months.</td></tr>
+                <tr><td><strong>Boron</strong></td><td>3–6 mg/day</td><td>Reduces SHBG; increases free testosterone and estradiol availability; bone support</td><td>Generally well tolerated at doses below 20 mg/day. May modestly increase E2 — relevant if patient has estrogen dominance concerns. Monitor labs 6–8 weeks after adding.</td></tr>
+                <tr><td><strong>Pregnenolone</strong></td><td>10–50 mg/day (start low)</td><td>Precursor to all steroid hormones; adrenal fatigue; neurosteroid support; cognitive function</td><td>Can convert to cortisol, DHEA, or progesterone — direction unpredictable. Start at 10 mg. Can cause vivid dreams or anxiety at higher doses. Monitor downstream hormones.</td></tr>
+                <tr><td><strong>Phosphatidylserine</strong></td><td>200–400 mg/day</td><td>Cortisol modulation; HPA regulation; cognitive support; supports healthy progesterone-cortisol balance</td><td>Blood thinning potential at high doses — caution with anticoagulants. Generally well tolerated. Take with food.</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- CARDIOMETABOLIC -->
+        <div id="s7-cardio" class="protocol-card reveal">
+          <div class="card-header" onclick="toggleCard(this)">
+            <div class="card-title-group">
+              <div class="card-icon">❤️</div>
+              <div>
+                <div class="card-title">Cardiometabolic Stack</div>
+                <div class="card-subtitle">Insulin sensitivity · Lipid optimization · Blood pressure · Inflammation</div>
+              </div>
+            </div>
+            <svg class="card-chevron" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+          </div>
+          <div class="card-body">
+            <table class="proto-table">
+              <thead><tr><th>Supplement</th><th>Form / Dose</th><th>Indication</th><th>Key Interactions / Flags</th></tr></thead>
+              <tbody>
+                <tr><td><strong>Omega-3 (EPA+DHA)</strong></td><td>Fish oil or algae · 2–4 g EPA+DHA/day</td><td>TG reduction; anti-inflammatory; CV protection; insulin sensitivity; mood and cognition</td><td>Blood thinning at high doses — flag pre-procedure. Burping: use enteric-coated or take with meals. Fish-free: algae-based equivalent available. Monitor omega-3 index — target 8–12%.</td></tr>
+                <tr><td><strong>Berberine</strong></td><td>500 mg 2–3x/day with meals</td><td>Insulin sensitization (AMPK activation); glucose regulation; lipid reduction; gut microbiome support</td><td>Significant drug interactions — potentiates metformin, warfarin, cyclosporine. Reduces CYP3A4 substrates. GI side effects common initially — titrate slowly. Do not combine with GLP-1 without monitoring.</td></tr>
+                <tr><td><strong>Magnesium Glycinate</strong></td><td>200–400 mg/day</td><td>Blood pressure regulation; insulin sensitization; arrhythmia prevention; stress response</td><td>Separate from medications by 2 hours. Loose stools if dose too high. Especially important for patients on diuretics or with hypertension on TRT.</td></tr>
+                <tr><td><strong>CoQ10 (Ubiquinol)</strong></td><td>Ubiquinol form · 100–300 mg/day</td><td>Mitochondrial energy; statin-induced myopathy prevention; cardiac muscle support; antioxidant</td><td>Ubiquinol form preferred over ubiquinone (better absorption). Essential if patient is on statin therapy. May lower blood pressure slightly — monitor. Fat-soluble — take with meal.</td></tr>
+                <tr><td><strong>Berberine + Alpha Lipoic Acid</strong></td><td>ALA 300–600 mg/day</td><td>Insulin sensitization; antioxidant; peripheral neuropathy; heavy metal chelation support</td><td>ALA chelates minerals — take separately from other supplements. R-ALA form preferred (more bioavailable). Monitor blood glucose if on insulin secretagogues.</td></tr>
+                <tr><td><strong>Nattokinase</strong></td><td>100–200 mg (2000 FU)/day</td><td>Fibrinolytic support; blood viscosity reduction; cardiovascular protection; TRT-related clot risk mitigation</td><td>Significant blood-thinning effect — do not combine with anticoagulants without medical oversight. Hold 7–10 days before any procedure. Check with hematology if complex clotting history.</td></tr>
+                <tr><td><strong>Bergamot Extract</strong></td><td>500–1000 mg/day standardized</td><td>LDL reduction; HDL support; insulin sensitization; alternative to statins in mild-moderate dyslipidemia</td><td>Generally well tolerated. May interact with statins if combined — monitor for myopathy. Mild GI effects possible. Excellent option for statin-intolerant patients.</td></tr>
+                <tr><td><strong>Vitamin K2 (MK-7)</strong></td><td>100–200 mcg/day</td><td>Calcium trafficking (bones not arteries); arterial calcification prevention; coagulation support</td><td>Interferes with warfarin — contraindicated with anticoagulants or requires careful dose monitoring. Essential partner to D3 supplementation.</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- GUT -->
+        <div id="s7-gut" class="protocol-card reveal">
+          <div class="card-header" onclick="toggleCard(this)">
+            <div class="card-title-group">
+              <div class="card-icon">🌱</div>
+              <div>
+                <div class="card-title">Gut & Microbiome Stack</div>
+                <div class="card-subtitle">Barrier integrity · Microbiome diversity · Motility · Inflammation · Dysbiosis</div>
+              </div>
+            </div>
+            <svg class="card-chevron" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+          </div>
+          <div class="card-body">
+            <table class="proto-table">
+              <thead><tr><th>Supplement</th><th>Form / Dose</th><th>Indication</th><th>Key Interactions / Flags</th></tr></thead>
+              <tbody>
+                <tr><td><strong>Probiotic — Multi-Strain</strong></td><td>50–100B CFU multi-strain · daily</td><td>Microbiome diversity; immune modulation; IBS; dysbiosis correction; mood-gut axis</td><td>Separate from antibiotics by 2+ hours. May cause bloating in first 1–2 weeks — start low. Avoid in severely immunocompromised patients. Rotate strains every 3 months for diversity.</td></tr>
+                <tr><td><strong>Saccharomyces boulardii</strong></td><td>5 billion CFU/day</td><td>Antibiotic-associated diarrhea; C. diff prevention; intestinal barrier support; candida overgrowth</td><td>Safe to take alongside antibiotics (yeast, not bacteria). Avoid in systemic fungal infections. Excellent during and after antibiotic courses.</td></tr>
+                <tr><td><strong>L-Glutamine</strong></td><td>5–15 g/day powder</td><td>Intestinal barrier integrity; leaky gut; post-surgical recovery; IBS; mucosal healing</td><td>Avoid in active cancer (provides fuel for rapidly dividing cells — theoretical concern). Generally well tolerated. Can cause GI discomfort at very high doses. Key component of gut-healing protocols.</td></tr>
+                <tr><td><strong>Slippery Elm / DGL Licorice</strong></td><td>DGL 400–800 mg before meals</td><td>Gastric mucosa protection; GERD adjunct; IBD symptom support; esophageal and gastric soothing</td><td>DGL (deglycyrrhizinated) form — avoids blood pressure elevation of whole licorice. Generally safe. Take before meals for best effect. Pairs well with L-glutamine in gut-healing protocol.</td></tr>
+                <tr><td><strong>Digestive Enzymes</strong></td><td>Broad-spectrum · with each meal</td><td>Enzyme insufficiency; bloating after meals; SIBO adjunct; fat malabsorption; low stomach acid patterns</td><td>If patient is on PPIs, address root cause — enzymes are supportive but not curative of acid suppression. SIBO: avoid high-fiber enzymes that may feed bacteria. Generally well tolerated.</td></tr>
+                <tr><td><strong>Zinc Carnosine</strong></td><td>75 mg (37.5 mg zinc) twice daily</td><td>Gastric mucosa repair; H. pylori adjunct; leaky gut; NSAID-associated gut damage</td><td>Count zinc content toward total daily zinc intake. Most gastric-specific zinc form. Takes 4–8 weeks to see meaningful gut mucosal improvement.</td></tr>
+                <tr><td><strong>Butyrate (sodium/calcium)</strong></td><td>300–600 mg/day</td><td>Colonocyte fuel; leaky gut; IBD adjunct; microbiome diversity support; anti-inflammatory</td><td>May cause GI discomfort initially — start low. Odor (mild sulfurous) is normal. Tributyrin form for better delivery to colon. Pairs with probiotics and fiber for microbiome remodeling.</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- COGNITION & MOOD -->
+        <div id="s7-neuro" class="protocol-card reveal">
+          <div class="card-header" onclick="toggleCard(this)">
+            <div class="card-title-group">
+              <div class="card-icon">🧠</div>
+              <div>
+                <div class="card-title">Cognition, Mood & Sleep Stack</div>
+                <div class="card-subtitle">Neurotransmitter support · BDNF · Sleep architecture · Stress resilience</div>
+              </div>
+            </div>
+            <svg class="card-chevron" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+          </div>
+          <div class="card-body">
+            <table class="proto-table">
+              <thead><tr><th>Supplement</th><th>Form / Dose</th><th>Indication</th><th>Key Interactions / Flags</th></tr></thead>
+              <tbody>
+                <tr><td><strong>Magnesium L-Threonate</strong></td><td>1.5–2 g/day (144 mg elemental Mg)</td><td>Cognitive function; memory; sleep quality; crosses blood-brain barrier; anxiety</td><td>The only magnesium form demonstrated to cross the BBB effectively. More expensive than glycinate. Combine with glycinate for systemic + cognitive benefit. May cause vivid dreams.</td></tr>
+                <tr><td><strong>Lion's Mane Mushroom</strong></td><td>500–1000 mg standardized extract · 2x/day</td><td>BDNF and NGF upregulation; neuroplasticity; cognitive function; mild depression and anxiety</td><td>Generally well tolerated. Rare allergic reactions in mushroom-sensitive patients. Takes 4–8 weeks for cognitive effect. Pairs well with omega-3 for neuroinflammation.</td></tr>
+                <tr><td><strong>Phosphatidylserine</strong></td><td>200–400 mg/day</td><td>Cortisol modulation; memory and cognitive performance; HPA regulation</td><td>Blood thinning at high doses. Generally safe at clinical doses. Soy-derived — use sunflower-derived for soy sensitivity. Take with food.</td></tr>
+                <tr><td><strong>5-HTP</strong></td><td>50–200 mg/day (start at 50 mg PM)</td><td>Serotonin precursor; mood support; sleep initiation; migraine prevention; carbohydrate craving reduction</td><td>ABSOLUTE CONTRAINDICATION with SSRIs, SNRIs, MAOIs, triptans — serotonin syndrome risk. Do not combine without careful medical supervision. Taper dose if discontinuing after long-term use.</td></tr>
+                <tr><td><strong>Ashwagandha (KSM-66)</strong></td><td>300–600 mg/day</td><td>Cortisol reduction; anxiety; cognitive stamina; sleep quality; testosterone support in men</td><td>Avoid in Graves'/hyperthyroidism. Avoid in pregnancy. May enhance thyroid function — monitor levels. Generally well tolerated; rare GI upset.</td></tr>
+                <tr><td><strong>Melatonin</strong></td><td>0.5–1 mg (low-dose) PM</td><td>Sleep initiation; circadian rhythm reset; antioxidant; jet lag; shift work</td><td>Use lowest effective dose — higher doses (5–10 mg) are pharmacologic, not physiologic. Time-release for sleep maintenance. Do not use long-term in children. Avoid with anticoagulants at high doses.</td></tr>
+                <tr><td><strong>L-Theanine</strong></td><td>100–400 mg/day</td><td>Calm focus; anxiety without sedation; sleep quality (with melatonin); attenuates caffeine jitteriness</td><td>Extremely well tolerated. Safe for most patients. Pairs well with melatonin at night (200 mg + 0.5–1 mg) for sleep initiation without next-day grogginess.</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- IMMUNE -->
+        <div id="s7-immune" class="protocol-card reveal">
+          <div class="card-header" onclick="toggleCard(this)">
+            <div class="card-title-group">
+              <div class="card-icon">⚔️</div>
+              <div>
+                <div class="card-title">Immune & Anti-Inflammation Stack</div>
+                <div class="card-subtitle">Immune modulation · Antioxidant · Autoimmune adjunct · Viral support</div>
+              </div>
+            </div>
+            <svg class="card-chevron" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+          </div>
+          <div class="card-body">
+            <table class="proto-table">
+              <thead><tr><th>Supplement</th><th>Form / Dose</th><th>Indication</th><th>Key Interactions / Flags</th></tr></thead>
+              <tbody>
+                <tr><td><strong>Vitamin C (buffered)</strong></td><td>Calcium ascorbate or liposomal · 1–3 g/day</td><td>Immune modulation; collagen synthesis; antioxidant; cortisol synthesis cofactor; IV infusion adjunct</td><td>Divided doses improve tolerance and absorption. Above 2 g/day may cause loose stools — titrate. Avoid high-dose in G6PD deficiency. Liposomal form for superior absorption without GI effects.</td></tr>
+                <tr><td><strong>Quercetin</strong></td><td>500–1000 mg/day with food</td><td>Mast cell stabilization; antihistamine; anti-inflammatory; zinc ionophore; viral entry inhibition</td><td>Pairs powerfully with zinc (ionophore effect). May reduce thyroid hormone uptake — separate from thyroid medication by 4 hours. Generally well tolerated. Fat-soluble — take with food.</td></tr>
+                <tr><td><strong>NAC (N-Acetyl Cysteine)</strong></td><td>600–1800 mg/day</td><td>Glutathione precursor; respiratory health; liver protection; antioxidant; gut barrier support; mental health</td><td>Avoid with nitroglycerin and nitroprusside. May thin secretions — beneficial in respiratory conditions, manageable in others. Start at 600 mg to assess tolerance. Emerging evidence in OCD and addiction.</td></tr>
+                <tr><td><strong>Curcumin (BCM-95)</strong></td><td>500–1000 mg/day standardized</td><td>NF-kB inhibition; systemic anti-inflammatory; joint support; gut inflammation; autoimmune modulation</td><td>BCM-95 or Meriva (phytosome) forms for bioavailability — standard curcumin has poor absorption. Blood-thinning effect at high doses. May reduce drug metabolism — check CYP450 interactions. Avoid pre-procedure.</td></tr>
+                <tr><td><strong>Vitamin D3 + K2</strong></td><td>5000 IU D3 + 100 mcg K2 MK-7/day</td><td>Immune regulation; autoimmune modulation; infection resistance; hormone receptor support</td><td>Monitor 25-OH D levels — target 70–100 ng/mL. K2 essential with D3 supplementation. Toxicity rare but possible above 10,000 IU/day long-term without monitoring.</td></tr>
+                <tr><td><strong>Zinc (as bisglycinate)</strong></td><td>25–50 mg/day</td><td>Antiviral; immune regulation; wound healing; testosterone synthesis; thyroid cofactor</td><td>Take with food. Balance with copper. Do not exceed 40 mg/day long-term without copper supplementation. Critical for NK cell function and antiviral immune response.</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- LONGEVITY -->
+        <div id="s7-longevity" class="protocol-card reveal">
+          <div class="card-header" onclick="toggleCard(this)">
+            <div class="card-title-group">
+              <div class="card-icon">⏳</div>
+              <div>
+                <div class="card-title">Longevity & Mitochondrial Stack</div>
+                <div class="card-subtitle">Cellular energy · NAD+ · Senolytic support · Antioxidant defense · Telomere health</div>
+              </div>
+            </div>
+            <svg class="card-chevron" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+          </div>
+          <div class="card-body">
+            <table class="proto-table">
+              <thead><tr><th>Supplement</th><th>Form / Dose</th><th>Indication</th><th>Key Interactions / Flags</th></tr></thead>
+              <tbody>
+                <tr><td><strong>NMN or NR (NAD+ precursor)</strong></td><td>NMN 250–500 mg/day AM · NR 300–600 mg/day AM</td><td>NAD+ restoration; mitochondrial function; DNA repair; sirtuin activation; aging and metabolic support</td><td>NMN may have slight advantage for cellular uptake but evidence still emerging. Take AM — stimulating for some patients. Avoid in active cancer (NAD+ fuels all cells). May improve insulin sensitivity — monitor in diabetics.</td></tr>
+                <tr><td><strong>CoQ10 (Ubiquinol)</strong></td><td>100–300 mg/day with fat</td><td>Electron transport chain; ATP production; statin-induced CoQ10 depletion; cardiac function; antioxidant</td><td>Ubiquinol form for patients over 40 (better conversion). Fat-soluble — take with meals. May mildly lower blood pressure. Essential for all statin patients.</td></tr>
+                <tr><td><strong>Resveratrol</strong></td><td>Trans-resveratrol · 100–500 mg/day</td><td>Sirtuin activation (SIRT1); mitochondrial biogenesis; anti-inflammatory; CV protection; insulin sensitivity</td><td>Trans-resveratrol form only (cis-form is inactive). Phytoestrogen activity — caution in hormone-sensitive cancers. Blood-thinning at high doses. Pairs synergistically with NMN/NR. Take with fat for absorption.</td></tr>
+                <tr><td><strong>Alpha Lipoic Acid (R-ALA)</strong></td><td>R-ALA form · 100–600 mg/day</td><td>Recycling other antioxidants (C, E, glutathione); glucose metabolism; neuroprotection; mitochondrial function</td><td>R-ALA preferred over racemic mixture. Chelates minerals — separate from supplements by 2 hours. May lower blood sugar — monitor in diabetics. Take with food to reduce nausea.</td></tr>
+                <tr><td><strong>Spermidine</strong></td><td>1–5 mg/day (from wheat germ or supplement)</td><td>Autophagy induction; cellular renewal; mitochondrial biogenesis; anti-aging; immune rejuvenation</td><td>One of the most promising longevity compounds — activates autophagy (cellular clean-up). Generally well tolerated. Avoid in wheat allergy if using wheat germ extract (supplement form is safe). Evidence is emerging.</td></tr>
+                <tr><td><strong>Pyrroloquinoline Quinone (PQQ)</strong></td><td>10–20 mg/day</td><td>Mitochondrial biogenesis (new mitochondria); neuroprotection; antioxidant; cognitive and energy support</td><td>Pairs synergistically with CoQ10. Generally very well tolerated. Take AM — mild stimulating effect. Long-term safety data limited but existing evidence looks favorable.</td></tr>
+                <tr><td><strong>Fisetin</strong></td><td>100–500 mg/day (or pulsed dosing)</td><td>Senolytic activity (clearing senescent cells); anti-inflammatory; neuroprotection; antioxidant</td><td>Pulsed dosing protocol being studied (2 consecutive days/month at higher dose). Blood-thinning at high doses. Generally well tolerated. Emerging compound — position as experimental longevity support.</td></tr>
+              </tbody>
+            </table>
+            <div class="note-box" style="margin-top:1.25rem">
+              <div class="note-label">Longevity Stack Sequencing Note</div>
+              <div class="note-text">Foundation first: nutrient repletion, sleep, insulin sensitivity, inflammation control. Longevity supplements amplify a working system — they cannot compensate for deficient foundations. Build the base before layering NMN, senolytic, and mitochondrial compounds.</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ─── FOOTER ─── -->
+    <footer style="background:#1f4a50;padding:3rem 4rem;text-align:center;border-top:1px solid rgba(82,132,137,0.3)">
+      <div style="font-family:'Cormorant Garamond',serif;font-size:1.5rem;color:var(--white);margin-bottom:0.3rem">Val<em style="color:var(--cyan);font-style:italic">è</em>re by CDR Health</div>
+      <div style="font-family:'DM Mono',monospace;font-size:0.62rem;letter-spacing:0.18em;color:rgba(255,255,255,0.3);text-transform:uppercase;margin-bottom:1.5rem">The Valère Signal · Clinical Playbook · 2025</div>
+      <div style="font-family:'DM Mono',monospace;font-size:0.6rem;letter-spacing:0.12em;color:rgba(255,255,255,0.2);line-height:2;text-transform:uppercase">
+        Melani Davis, MSN, APRN, FNP-C &nbsp;·&nbsp; 313 Norton Drive Suite 101B, Tallahassee, FL 32308<br>
+        P: (850) 738-7977 &nbsp;·&nbsp; Valerebycdr.com &nbsp;·&nbsp; Confidential — For Clinical Use Only
+      </div>
+    </footer>
+
+  </main>
+</div>
+
+<script>
+// ── CARD TOGGLE ──
+function toggleCard(header) {
+  const card = header.closest('.protocol-card');
+  card.classList.toggle('card-open');
+}
+
+// ── SMOOTH NAVIGATE ──
+function goto(id) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  // Update nav active state
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  event.target.classList.add('active');
+}
+
+// ── SCROLL REVEAL ──
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.classList.add('visible');
+      observer.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+// ── SEARCH ──
+const searchInput = document.getElementById('search-input');
+if (searchInput) {
+  searchInput.addEventListener('input', function() {
+    const q = this.value.toLowerCase().trim();
+    if (!q) {
+      document.querySelectorAll('.protocol-card').forEach(c => c.style.display = '');
+      document.querySelectorAll('.peptide-tile').forEach(t => t.style.display = '');
+      return;
+    }
+    document.querySelectorAll('.protocol-card').forEach(card => {
+      const text = card.textContent.toLowerCase();
+      card.style.display = text.includes(q) ? '' : 'none';
+      if (text.includes(q)) card.classList.add('card-open');
+    });
+    document.querySelectorAll('.peptide-tile').forEach(tile => {
+      tile.style.display = tile.textContent.toLowerCase().includes(q) ? '' : 'none';
+    });
+  });
+}
+
+// ── AUTO-OPEN FIRST CARD IN EACH SECTION ──
+document.querySelectorAll('.section-block').forEach(section => {
+  const firstCard = section.querySelector('.protocol-card');
+  if (firstCard) firstCard.classList.add('card-open');
+});
+
+// ── ACTIVE NAV ON SCROLL ──
+const sections = document.querySelectorAll('.section-block');
+const mainEl = document.getElementById('main');
+if (mainEl) {
+  mainEl.addEventListener('scroll', () => {
+    const scrollTop = mainEl.scrollTop;
+    sections.forEach(section => {
+      const top = section.offsetTop - 80;
+      const bottom = top + section.offsetHeight;
+      if (scrollTop >= top && scrollTop < bottom) {
+        const id = section.id;
+        document.querySelectorAll('.nav-item').forEach(n => {
+          if (n.getAttribute('onclick') && n.getAttribute('onclick').includes("'"+id+"'")) {
+            n.classList.add('active');
+          } else {
+            n.classList.remove('active');
+          }
+        });
+      }
+    });
+  });
+}
+</script>
+</body>
+</html>
